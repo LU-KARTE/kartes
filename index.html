@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <style>
-        #map {position:absolute; top: 0;bottom: 0;left: 0;right: 0;}
+        #map {position:absolute; top: 40px;bottom: 0;left: 0;right: 0;}
     </style>
 </head>
 
@@ -20,12 +20,21 @@
     <div id="map"></div>
     <script>
         var map = L.map('map', {
-        crs: L.CRS.Simple
+        crs: L.CRS.Simple,
+        minZoom: -5
         });
 
         var bounds = [[0,0], [1000,1000]];
-        var image = L.imageOverlay('7_stavs_4.png', bounds).addTo(map);
+        var stavs7 = L.imageOverlay('7stavs.svg',bounds).addTo(map);
+        var stavs2 = L.imageOverlay('2stavs.svg',bounds).addTo(map);
+        
+        var baseMaps = {
+            "2": stavs2,
+            "7": stavs7
+        };
 
+        L.control.layers(baseMaps).addTo(map);
+        
         map.fitBounds(bounds);
     </script>
 
