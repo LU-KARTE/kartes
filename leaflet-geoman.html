@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZM KARTE</title>
+
+    <!--Leaflet  CSS and JS-->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+    <link rel="stylesheet" href="https://unpkg.com/@geoman-io/leaflet-geoman-free@latest/dist/leaflet-geoman.css" />
+    <script src="https://unpkg.com/@geoman-io/leaflet-geoman-free@latest/dist/leaflet-geoman.min.js"></script>
+
+    <style>
+        #map {position:absolute; top: 40px;bottom: 0;left: 0;right: 0;}
+    </style>
+</head>
+
+<body>
+
+    <div id="map"></div>
+    <script>
+        var map = L.map('map', {
+        crs: L.CRS.Simple,
+        minZoom: -5
+        });
+
+        var bounds = [[0,0], [1000,1000]];
+        var stavs7 = L.imageOverlay('7stavs.svg',bounds).addTo(map);
+        var stavs2 = L.imageOverlay('2stavs.svg',bounds).addTo(map);
+
+        var baseMaps = {
+            "2": stavs2,
+            "7": stavs7
+        };
+
+        L.control.layers(baseMaps).addTo(map);
+
+        map.fitBounds(bounds);
+
+        // add leaflet.pm controls to the map
+        map.pm.addControls();
+
+        function generateGeoJson(){
+        	var fg = L.featureGroup();
+        	var layers = findLayers(map);
+          layers.forEach(function(layer){
+          	fg.addLayer(layer);
+          });
+        	console.log(fg.toGeoJSON());
+        }
+
+        function findLayers(map) {
+            var layers = [];
+            map.eachLayer(layer => {
+              if (
+                layer instanceof L.Polyline ||
+                layer instanceof L.Marker ||
+                layer instanceof L.Circle ||
+                layer instanceof L.CircleMarker
+              ) {
+                layers.push(layer);
+              }
+            });
+
+            // filter out layers that don't have the leaflet-geoman instance
+            layers = layers.filter(layer => !!layer.pm);
+
+            // filter out everything that's leaflet-geoman specific temporary stuff
+            layers = layers.filter(layer => !layer._pmTempLayer);
+
+            return layers;
+          }
+    </script>
+    <button onclick="generateGeoJson()">
+    GeoJSON
+    </button>
+</body>
+
+</html>
