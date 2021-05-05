@@ -38,10 +38,8 @@
 
     map.on('pm:create', function(e) {
       currentBaseLayer.addLayer(e.layer);
-      console.log(e.shape)
       }).on('baselayerchange', function(e) {
           currentBaseLayer = e.layer;
-          console.log(e.layer)
       })
 
     L.control.layers({7: stavs7, 2: stavs2}, null, {collapsed: false}).addTo(map)
