@@ -8,6 +8,7 @@
     <title>ZM KARTE</title>
 
     <!--Leaflet  CSS and JS-->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -15,59 +16,112 @@
     <script src="https://unpkg.com/@geoman-io/leaflet-geoman-free@latest/dist/leaflet-geoman.min.js"></script>
 
     <style>
-        #map {position:absolute; top: 40px;bottom: 0;left: 0;right: 0;}
+        html, body {
+            height: 100%;
+        }
+        #map {width:100%; height:90%;}
     </style>
 </head>
 
 <body>
-
+    <button id="button-geoJSON"> GeoJSON </button>
+    <button id="button-clear"> Clear printed data </button>
+    <div id="bin-data-sent" class="bin-data"></div>
+    <div id="bin-data-received-content" class="bin-data"></div>
+    <div id="bin-data-received-metadata" class="bin-data"></div>
     <div id="map"></div>
+
+
     <script>
-    var map = L.map('map', {
-        crs: L.CRS.Simple,
-        minZoom: -5
+    $(document).ready(function() {
+        // event listeners
+        $( "#button-geoJSON" ).on( "click", function() {
+            generateGeoJson();
+        });
+        $( "#button-clear" ).on( "click", function() {
+            clearBinsData();
+        });
+
+        var map = L.map('map', {
+            crs: L.CRS.Simple,
+            minZoom: -5
         })
 
-    var bounds = [[0,0], [1000,1000]];
+        var bounds = [[0, 0], [1000, 1000]];
 
-    map.fitBounds(bounds);
-    var stavs7 = L.layerGroup([L.imageOverlay('7stavs.svg',bounds)]);
-    var stavs2 = L.layerGroup([L.imageOverlay('2stavs.svg', bounds)]);
+        map.fitBounds(bounds);
+        var stavs7 = L.layerGroup([L.imageOverlay('7stavs.svg', bounds)]);
+        var stavs2 = L.layerGroup([L.imageOverlay('2stavs.svg', bounds)]);
 
-    var currentBaseLayer =  stavs7.addTo(map);
+        var currentBaseLayer = stavs7.addTo(map);
 
-    map.on('pm:create', function(e) {
-      currentBaseLayer.addLayer(e.layer);
-      }).on('baselayerchange', function(e) {
-          currentBaseLayer = e.layer;
-      })
+        map.on('pm:create', function (e) {
+            currentBaseLayer.addLayer(e.layer);
+        }).on('baselayerchange', function (e) {
+            currentBaseLayer = e.layer;
+        })
 
-    L.control.layers({7: stavs7, 2: stavs2}, null, {collapsed: false}).addTo(map)
+        L.control.layers({7: stavs7, 2: stavs2}, null, {collapsed: false}).addTo(map)
 
-    map.pm.addControls({
-      position: 'topleft',
-      drawCircle: false,
-    });
-    function generateGeoJson(){
-        	var fg = L.featureGroup();
-        	var layers = findLayers(map);
-          layers.forEach(function(layer){
-          	fg.addLayer(layer);
-          });
-        	console.log(fg.toGeoJSON());
+        map.pm.addControls({
+            position: 'topleft',
+            drawCircle: false,
+        });
+
+        function generateGeoJson() {
+            var fg = L.featureGroup();
+            var layers = findLayers(map);
+            layers.forEach(function (layer) {
+                fg.addLayer(layer);
+            });
+
+            let GeoDataJSON = fg.toGeoJSON();
+            let GeoDataJSONString = JSON.stringify(GeoDataJSON);
+
+            console.log(GeoDataJSON);
+
+            // send output to jsonbin (update bin)
+            $("#bin-data-sent").html("<b>Sent data to bin: </b><pre>" + JSON.stringify(GeoDataJSON, undefined, 2) + "</pre>"); // pre for pretty printing
+            let req = new XMLHttpRequest();
+
+            req.onreadystatechange = () => {
+                if (req.readyState === XMLHttpRequest.DONE) {
+
+                    // puts response from the bin which includes bin's content + metadata
+                    let responseText = req.responseText; // includes also metadata about the bin
+                    let binsData = JSON.stringify(JSON.parse(responseText)["record"]);
+                    let binsMetadata = JSON.stringify(JSON.parse(responseText)["metadata"]);
+                    // $("#bin-data-received-content").html("<b>Bin's data received:</b> " + binsData);
+                    // $("#bin-data-received-metadata").html("<b>Bin's metadata received:</b> " + binsMetadata);
+
+                }
+            };
+
+            req.open("PUT", "https://api.jsonbin.io/v3/b/608d5bad8a409667ca023d89", true);
+            req.setRequestHeader("Content-Type", "application/json");
+            req.setRequestHeader("X-Master-Key", "$2b$10$Yjdr9li351h.kPgEDCFee.R4ctCZ.TR7F/YiooA6Kerkqv60OuyQe");
+            req.send(GeoDataJSONString);
         }
+
+        // clears .bin-data divs
+        function clearBinsData() {
+            $(".bin-data").each(function () {
+                $(this).html("");
+            });
+        }
+
 
         function findLayers(map) {
             var layers = [];
             map.eachLayer(layer => {
-              if (
-                layer instanceof L.Polyline ||
-                layer instanceof L.Marker ||
-                layer instanceof L.Circle ||
-                layer instanceof L.CircleMarker
-              ) {
-                layers.push(layer);
-              }
+                if (
+                    layer instanceof L.Polyline ||
+                    layer instanceof L.Marker ||
+                    layer instanceof L.Circle ||
+                    layer instanceof L.CircleMarker
+                ) {
+                    layers.push(layer);
+                }
             });
 
             // filter out layers that don't have the leaflet-geoman instance
@@ -77,11 +131,9 @@
             layers = layers.filter(layer => !layer._pmTempLayer);
             return layers;
 
-          }
+        }
+    });
     </script>
-    <button onclick="generateGeoJson()">
-    GeoJSON
-    </button>
 
 </body>
 
