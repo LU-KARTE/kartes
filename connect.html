@@ -4,9 +4,26 @@
     <meta charset="UTF-8">
     <title>Connection test</title>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<!--    // search-->
+    <script src="https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@9.1.1/dist/js/autoComplete.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@9.1.1/dist/css/autoComplete.min.css">
+
+
     <script src="main.js"></script>
 </head>
 <body>
+
+<!--    <input id="autoComplete" type="search" dir="ltr" spellcheck=false autocorrect="off" autocomplete="off" autocapitalize="off" maxlength="2048" tabindex="1">-->
+<div class="autoComplete_wrapper">
+    <input type="search" dir="ltr" spellcheck=false autocorrect="off" autocomplete="off" autocapitalize="off" id="autoComplete">
+</div>
+    <!-- OR -->
+
+<!--    <textarea id="autoComplete" rows="4" cols="50" maxlength="2048" tabindex="1">-->
+
+
+
     <pre id="connection-div"></pre>
+    <pre id="full-response"></pre>
 </body>
 </html>
