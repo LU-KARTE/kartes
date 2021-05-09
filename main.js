@@ -29,6 +29,8 @@ $(document).ready(function() {
 
             let records = JSON.parse(req.responseText)["record"];
             features = records["features"];
+
+            // init search input
             searchPlaces(features);
 
             $("#full-response").text(JSON.stringify(features));
@@ -39,7 +41,7 @@ $(document).ready(function() {
                 }
             )
 
-            $("#connection-div").text(text);
+            $("#connection-div").text(JSON.stringify(features, undefined, 2));
             console.log(JSON.parse(req.responseText));
         }
     };
@@ -50,14 +52,17 @@ $(document).ready(function() {
 
 
     function searchPlaces(features) {
+        // creates array for search
         let features_list_for_search = [];
 
         $.each(features,
             function(key, item) {
-                features_list_for_search.push({"Kabinets": item["properties"]["name"]});
+                features_list_for_search.push({
+                    "kabinets": item["properties"]["name"],
+                    "strukturvieniba": item["properties"]["strukturvieniba"]
+                });
             }
         )
-
 
         // Search
         new autoComplete({
@@ -65,7 +70,8 @@ $(document).ready(function() {
             placeHolder: "Meklēšana...",
             data: {
                 // src: ["Sauce - Thousand Island", "Wild Boar - Tenderloin", "Goat - Whole Cut"]
-                src: features_list_for_search
+                src: features_list_for_search,
+                key: ["kabinets", "strukturvieniba"]
             },
             resultsList: {
                 noResults: (list, query) => {
