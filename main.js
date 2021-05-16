@@ -58,8 +58,10 @@ $(document).ready(function() {
         $.each(features,
             function(key, item) {
                 features_list_for_search.push({
+                    "id": item["properties"]["id"],
                     "kabinets": item["properties"]["name"],
-                    "strukturvieniba": item["properties"]["strukturvieniba"]
+                    "strukturvieniba": item["properties"]["strukturvieniba"],
+                    "stavs": item["properties"]["stavs"]
                 });
             }
         )
@@ -69,9 +71,8 @@ $(document).ready(function() {
             selector: "#autoComplete",
             placeHolder: "Meklēšana...",
             data: {
-                // src: ["Sauce - Thousand Island", "Wild Boar - Tenderloin", "Goat - Whole Cut"]
                 src: features_list_for_search,
-                key: ["kabinets", "strukturvieniba"]
+                key: ["kabinets", "strukturvieniba", "id"]
             },
             resultsList: {
                 noResults: (list, query) => {
@@ -80,16 +81,55 @@ $(document).ready(function() {
                     // Add class to the created element
                     message.setAttribute("class", "no_result");
                     // Add message text content
-                    message.innerHTML = `<span>Found No Results for "${query}"</span>`;
+                    message.innerHTML = `<span>Nav rezultātu meklētajai frāzei "${query}"</span>`;
                     // Append message element to the results list
                     list.appendChild(message);
                 },
             },
+
+            // when the search results appears
+            trigger: {
+                event: ["input", "focus"]
+            },
+
+            // each result line appearance
             resultItem: {
                 highlight: {
                     render: true
+                },
+                content: (data, element) => {
+                    // Modify Results Item Style
+                    element.style = "display: flex; justify-content: space-between;";
+                    // Modify Results Item Content
+                    element.innerHTML = `<span style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">
+                    ${data.value.kabinets} (${data.value.id})</span>
+                    <span style="display: flex; align-items: center; font-size: 13px; font-weight: 100; color: rgba(0,0,0,.2);">
+                        <span style=" text-transform: uppercase;"> 
+                        ${data.value.strukturvieniba}
+                         </span>
+                        &nbsp;&nbsp;&nbsp;
+                        <span style="">
+                        ${data.value.stavs}. Stāvs
+                        </span>
+                    </span>`;
+
                 }
+            },
+
+            // when clicked on an item, select it...
+            onSelection: (feedback) => {
+                document.querySelector("#autoComplete").blur();
+                // Prepare User's Selected Value
+                const selection = feedback.selection.value[feedback.selection.key];
+                // Render selected choice to selection div
+                // document.querySelector(".selection").innerHTML = selection;
+                // Replace Input value with the selected value
+                document.querySelector("#autoComplete").value = selection;
+                // Console log autoComplete data feedback
+                console.log(feedback);
             }
+
+
         });
 
     }
