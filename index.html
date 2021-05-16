@@ -25,12 +25,18 @@
         });
 
         var bounds = [[0,0], [1000,1000]];
-        var stavs7 = L.imageOverlay('7stavs.svg',bounds).addTo(map);
-        var stavs2 = L.imageOverlay('2stavs.svg',bounds).addTo(map);
+        var stavs1 = L.imageOverlay('zm1.svg',bounds).addTo(map);
+        var stavs2 = L.imageOverlay('zm2.svg',bounds).addTo(map);
+        var stavs3 = L.imageOverlay('zm3.svg',bounds).addTo(map);
+        var stavs4 = L.imageOverlay('zm4.svg',bounds).addTo(map);
+        var stavs5 = L.imageOverlay('zm5.svg',bounds).addTo(map);
         
         var baseMaps = {
+            "1": stavs1,
             "2": stavs2,
-            "7": stavs7
+            "3": stavs3,
+            "4": stavs4,
+            "5": stavs5
         };
 
         L.control.layers(baseMaps).addTo(map);
