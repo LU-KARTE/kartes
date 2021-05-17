@@ -65,6 +65,12 @@
         })
 
         L.control.layers({1: stavs1, 2: stavs2, 3: stavs3, 4: stavs4, 5: stavs5}, null, {collapsed: false}).addTo(map)
+        
+        map.on('pm:create', function (e) {
+            currentBaseLayer.addLayer(e.layer);
+        }).on('baselayerchange', function (e) {
+            currentBaseLayer = e.layer;
+        })
 
         map.pm.addControls({
             position: 'topleft',
