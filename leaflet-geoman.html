@@ -26,6 +26,7 @@
 <body>
     <button id="button-geoJSON"> GeoJSON </button>
     <button id="button-clear"> Clear printed data </button>
+    <button id="button-draw"> Refresh data and draw </button>
     <div id="bin-data-sent" class="bin-data"></div>
     <div id="bin-data-received-content" class="bin-data"></div>
     <div id="bin-data-received-metadata" class="bin-data"></div>
@@ -34,13 +35,46 @@
 
     <script>
     $(document).ready(function() {
+        // json bin constants
+        let API_KEY = "$2b$10$Yjdr9li351h.kPgEDCFee.R4ctCZ.TR7F/YiooA6Kerkqv60OuyQe";
+        let BIN_ID_TO_RECEIVE = "608d5bad8a409667ca023d89";
+        let BIN_ID_TO_SEND = BIN_ID_TO_RECEIVE;
+
         // event listeners
         $( "#button-geoJSON" ).on( "click", function() {
             generateGeoJson();
         });
+
         $( "#button-clear" ).on( "click", function() {
             clearBinsData();
         });
+
+        $( "#button-draw" ).on( "click", function() {
+            drawFromDB();
+        });
+
+        // receives data from json bin, assigns it to dataFromBin, (and draws it -- currently not implemented)
+        function drawFromDB() {
+            let dataFromBin = null;
+            let req = new XMLHttpRequest();
+
+            // receive data, assign it
+            req.onreadystatechange = () => {
+                if (req.readyState === XMLHttpRequest.DONE) {
+                    // response
+                    dataFromBin = req.responseText;
+
+                    // drawing
+                    $("#bin-data-received-content").html("<b>Data received: </b><pre>" + JSON.stringify(JSON.parse(dataFromBin), undefined, 2) + "</pre>"); // pre for pretty printing
+                    // IMPLEMENT DRAWING LOGIC HERE...
+                    // DATA IS IN DataFromBin...
+                }
+            };
+
+            req.open("GET", "https://api.jsonbin.io/v3/b/"+BIN_ID_TO_RECEIVE+"/latest", true);
+            req.setRequestHeader("X-Master-Key", API_KEY);
+            req.send();
+        }
 
         var map = L.map('map', {
             crs: L.CRS.Simple,
@@ -106,9 +140,9 @@
                 }
             };
 
-            req.open("PUT", "https://api.jsonbin.io/v3/b/608d5bad8a409667ca023d89", true);
+            req.open("PUT", "https://api.jsonbin.io/v3/b/" + BIN_ID_TO_SEND, true);
             req.setRequestHeader("Content-Type", "application/json");
-            req.setRequestHeader("X-Master-Key", "$2b$10$Yjdr9li351h.kPgEDCFee.R4ctCZ.TR7F/YiooA6Kerkqv60OuyQe");
+            req.setRequestHeader("X-Master-Key", API_KEY);
             req.send(GeoDataJSONString);
         }
 
