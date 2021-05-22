@@ -1,23 +1,23 @@
 {
   "files": {
     "main.css": "/kartes/static/css/main.1635e87c.chunk.css",
-    "main.js": "/kartes/static/js/main.05059428.chunk.js",
-    "main.js.map": "/kartes/static/js/main.05059428.chunk.js.map",
+    "main.js": "/kartes/static/js/main.d37893f5.chunk.js",
+    "main.js.map": "/kartes/static/js/main.d37893f5.chunk.js.map",
     "runtime-main.js": "/kartes/static/js/runtime-main.2fa8172b.js",
     "runtime-main.js.map": "/kartes/static/js/runtime-main.2fa8172b.js.map",
-    "static/js/2.decc3131.chunk.js": "/kartes/static/js/2.decc3131.chunk.js",
-    "static/js/2.decc3131.chunk.js.map": "/kartes/static/js/2.decc3131.chunk.js.map",
+    "static/js/2.57c468e0.chunk.js": "/kartes/static/js/2.57c468e0.chunk.js",
+    "static/js/2.57c468e0.chunk.js.map": "/kartes/static/js/2.57c468e0.chunk.js.map",
     "static/js/3.6fe18d1c.chunk.js": "/kartes/static/js/3.6fe18d1c.chunk.js",
     "static/js/3.6fe18d1c.chunk.js.map": "/kartes/static/js/3.6fe18d1c.chunk.js.map",
     "index.html": "/kartes/index.html",
     "static/css/main.1635e87c.chunk.css.map": "/kartes/static/css/main.1635e87c.chunk.css.map",
-    "static/js/2.decc3131.chunk.js.LICENSE.txt": "/kartes/static/js/2.decc3131.chunk.js.LICENSE.txt",
+    "static/js/2.57c468e0.chunk.js.LICENSE.txt": "/kartes/static/js/2.57c468e0.chunk.js.LICENSE.txt",
     "static/media/logo.6ce24c58.svg": "/kartes/static/media/logo.6ce24c58.svg"
   },
   "entrypoints": [
     "static/js/runtime-main.2fa8172b.js",
-    "static/js/2.decc3131.chunk.js",
+    "static/js/2.57c468e0.chunk.js",
     "static/css/main.1635e87c.chunk.css",
-    "static/js/main.05059428.chunk.js"
+    "static/js/main.d37893f5.chunk.js"
   ]
 }
