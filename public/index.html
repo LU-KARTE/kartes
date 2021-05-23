@@ -2,101 +2,57 @@
 <html lang="en">
 
 <head>
+    <!-- external css and js-->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/@geoman-io/leaflet-geoman-free@latest/dist/leaflet-geoman.css" />
+    <script src="https://unpkg.com/@geoman-io/leaflet-geoman-free@latest/dist/leaflet-geoman.min.js"></script>
+
+<!--    <style>-->
+<!--        #map {position:absolute; top: 40px;bottom: 0;left: 0;right: 0;}-->
+<!--    </style>-->
+    <style>
+        html, body {
+            height: 100%;
+        }
+        #map, #root, #geoman-wrapper {width:100%; height:90%;}
+    </style>
+
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ZM KARTE</title>
 
-    <!--Leaflet  CSS and JS-->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-    <style>
-        #map {position:absolute; top: 40px;bottom: 0;left: 0;right: 0;}
-    </style>
-</head>
 
-<body>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta
+            name="description"
+            content="Web site created using create-react-app"
+    />
+  <!--
+  manifest.json provides metadata used when your web app is installed on a
+  user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
+-->
+  <!--
+    Notice the use of %PUBLIC_URL% in the tags above.
+    It will be replaced with the URL of the `public` folder during the build.
+    Only files inside the `public` folder can be referenced from the HTML.
 
-<div id="map"></div>
-<script>
-    var map = L.map('map', {
-        crs: L.CRS.Simple,
-        minZoom: -5
-    });
+    Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
+    work correctly both with client-side routing and a non-root public URL.
+    Learn how to configure a non-root public URL by running `npm run build`.
+  -->
 
-    var bounds = [[0,0], [1000,1000]];
-    var stavs1 = L.imageOverlay('zm1.svg',bounds).addTo(map);
-    var stavs2 = L.imageOverlay('zm2.svg',bounds).addTo(map);
-    var stavs3 = L.imageOverlay('zm3.svg',bounds).addTo(map);
-    var stavs4 = L.imageOverlay('zm4.svg',bounds).addTo(map);
-    var stavs5 = L.imageOverlay('zm5.svg',bounds).addTo(map);
+  </head>
 
-    var baseMaps = {
-        "1": stavs1,
-        "2": stavs2,
-        "3": stavs3,
-        "4": stavs4,
-        "5": stavs5
-    };
 
-    L.control.layers(baseMaps).addTo(map);
-
-    map.fitBounds(bounds);
-</script>
-
-</body>
-
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+  </body>
 </html>
-
-<!-- REACT PAGE -->
-
-<!--<!DOCTYPE html>-->
-<!--<html lang="en">-->
-
-<!--<head>-->
-<!--    &lt;!&ndash;Leaflet  CSS and JS&ndash;&gt;-->
-<!--    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />-->
-<!--    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>-->
-<!--    <style>-->
-<!--        #map {position:absolute; top: 40px;bottom: 0;left: 0;right: 0;}-->
-<!--    </style>-->
-
-<!--    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />-->
-<!--    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />-->
-<!--    <meta charset="UTF-8">-->
-<!--    <meta http-equiv="X-UA-Compatible" content="IE=edge">-->
-<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
-<!--    <title>ZM KARTE</title>-->
-
-
-<!--    <meta charset="utf-8" />-->
-<!--    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />-->
-<!--    <meta name="viewport" content="width=device-width, initial-scale=1" />-->
-<!--    <meta name="theme-color" content="#000000" />-->
-<!--    <meta-->
-<!--            name="description"-->
-<!--            content="Web site created using create-react-app"-->
-<!--    />-->
-<!--  &lt;!&ndash;-->
-<!--  manifest.json provides metadata used when your web app is installed on a-->
-<!--  user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/-->
-<!--&ndash;&gt;-->
-<!--  &lt;!&ndash;-->
-<!--    Notice the use of %PUBLIC_URL% in the tags above.-->
-<!--    It will be replaced with the URL of the `public` folder during the build.-->
-<!--    Only files inside the `public` folder can be referenced from the HTML.-->
-
-<!--    Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will-->
-<!--    work correctly both with client-side routing and a non-root public URL.-->
-<!--    Learn how to configure a non-root public URL by running `npm run build`.-->
-<!--  &ndash;&gt;-->
-
-<!--  </head>-->
-
-
-<!--  <body>-->
-<!--    <noscript>You need to enable JavaScript to run this app.</noscript>-->
-<!--    <div id="root"></div>-->
-
-<!--  </body>-->
-<!--</html>-->

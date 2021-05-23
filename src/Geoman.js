@@ -1,44 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
+import './App.css';
+import React from 'react'
+import $ from 'jquery'
+import {Button, ChakraProvider} from "@chakra-ui/react";
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ZM KARTE</title>
-
-    <!--Leaflet  CSS and JS-->
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <link rel="stylesheet" href="https://unpkg.com/@geoman-io/leaflet-geoman-free@latest/dist/leaflet-geoman.css" />
-    <script src="https://unpkg.com/@geoman-io/leaflet-geoman-free@latest/dist/leaflet-geoman.min.js"></script>
-
-    <style>
-        html, body {
-            height: 100%;
-        }
-        #map {width:100%; height:90%;}
-    </style>
-</head>
-
-<body>
-    <button id="button-geoJSON"> GeoJSON </button>
-    <button id="button-clear"> Clear printed data </button>
-    <button id="button-draw"> Refresh data and draw </button>
-    <div id="bin-data-sent" class="bin-data"></div>
-    <div id="bin-data-received-content" class="bin-data"></div>
-    <div id="bin-data-received-metadata" class="bin-data"></div>
-    <div id="map"></div>
-
-
-    <script>
+function Home () {
+    // script
     $(document).ready(function() {
         // json bin constants
         let API_KEY = "$2b$10$Yjdr9li351h.kPgEDCFee.R4ctCZ.TR7F/YiooA6Kerkqv60OuyQe";
         let BIN_ID_TO_RECEIVE = "608d5bad8a409667ca023d89";
         let BIN_ID_TO_SEND = BIN_ID_TO_RECEIVE;
+
+        // yeah.. bad.
+        // eslint-disable-next-line no-undef
+        const Leaflet = L;
+
+        const baseUrl = window.location.origin;
+        const preFolderName = 'kartes/';
+        const pathToImg = baseUrl + '/' + preFolderName;
 
         // event listeners
         $( "#button-geoJSON" ).on( "click", function() {
@@ -76,19 +55,26 @@
             req.send();
         }
 
-        var map = L.map('map', {
-            crs: L.CRS.Simple,
+        // remove map if already initialized
+        var container = Leaflet.DomUtil.get('map');
+        if(container != null){
+            container._leaflet_id = null;
+        }
+
+        // init map
+        var map = Leaflet.map('map', {
+            crs: Leaflet.CRS.Simple,
             minZoom: -5
         })
 
         var bounds = [[0, 0], [1000, 1000]];
 
         map.fitBounds(bounds);
-        var stavs1 = L.layerGroup([L.imageOverlay('zm1.svg', bounds)]);
-        var stavs2 = L.layerGroup([L.imageOverlay('zm2.svg', bounds)]);
-        var stavs3 = L.layerGroup([L.imageOverlay('zm3.svg', bounds)]);
-        var stavs4 = L.layerGroup([L.imageOverlay('zm4.svg', bounds)]);
-        var stavs5 = L.layerGroup([L.imageOverlay('zm5.svg', bounds)]);
+        var stavs1 = Leaflet.layerGroup([Leaflet.imageOverlay(pathToImg + 'zm1.svg', bounds)]);
+        var stavs2 = Leaflet.layerGroup([Leaflet.imageOverlay(pathToImg + 'zm2.svg', bounds)]);
+        var stavs3 = Leaflet.layerGroup([Leaflet.imageOverlay(pathToImg + 'zm3.svg', bounds)]);
+        var stavs4 = Leaflet.layerGroup([Leaflet.imageOverlay(pathToImg + 'zm4.svg', bounds)]);
+        var stavs5 = Leaflet.layerGroup([Leaflet.imageOverlay(pathToImg + 'zm5.svg', bounds)]);
 
         var currentBaseLayer = stavs1.addTo(map);
 
@@ -98,8 +84,8 @@
             currentBaseLayer = e.layer;
         })
 
-        L.control.layers({1: stavs1, 2: stavs2, 3: stavs3, 4: stavs4, 5: stavs5}, null, {collapsed: false}).addTo(map)
-        
+        Leaflet.control.layers({1: stavs1, 2: stavs2, 3: stavs3, 4: stavs4, 5: stavs5}, null, {collapsed: false}).addTo(map)
+
         map.on('pm:create', function (e) {
             currentBaseLayer.addLayer(e.layer);
         }).on('baselayerchange', function (e) {
@@ -112,7 +98,7 @@
         });
 
         function generateGeoJson() {
-            var fg = L.featureGroup();
+            var fg = Leaflet.featureGroup();
             var layers = findLayers(map);
             layers.forEach(function (layer) {
                 fg.addLayer(layer);
@@ -158,10 +144,10 @@
             var layers = [];
             map.eachLayer(layer => {
                 if (
-                    layer instanceof L.Polyline ||
-                    layer instanceof L.Marker ||
-                    layer instanceof L.Circle ||
-                    layer instanceof L.CircleMarker
+                    layer instanceof Leaflet.Polyline ||
+                    layer instanceof Leaflet.Marker ||
+                    layer instanceof Leaflet.Circle ||
+                    layer instanceof Leaflet.CircleMarker
                 ) {
                     layers.push(layer);
                 }
@@ -176,8 +162,21 @@
 
         }
     });
-    </script>
 
-</body>
+    // return
+    return (
+        <div id="geoman-wrapper">
+            <ChakraProvider>
+                <Button m={1} id="button-geoJSON">GeoJSON</Button>
+                <Button m={1} id="button-clear">Clear printed data</Button>
+                <Button m={1} id="button-draw">Refresh data and draw</Button>
+            </ChakraProvider>
+            <div id="bin-data-sent" className="bin-data"></div>
+            <div id="bin-data-received-content" className="bin-data"></div>
+            <div id="bin-data-received-metadata" className="bin-data"></div>
+            <div id="map"></div>
+        </div>
+    )
+}
 
-</html>
+export default Home;

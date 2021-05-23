@@ -1,15 +1,11 @@
 import logo from './logo.svg';
+import $ from 'jquery';
 import './App.css';
 import { HashRouter, Switch, Route, Link } from 'react-router-dom'
 import React, { useScript, Component } from "react";
 import Home from './Home';
-
-
-function Geoman() {
-    return(
-        <div>Geoman</div>
-    )
-}
+import Geoman from './Geoman';
+import { ChakraProvider, Button} from "@chakra-ui/react"
 
 function NotFound() {
     return(
@@ -18,15 +14,23 @@ function NotFound() {
 }
 function App() {
     return (
-      <div>
-          <HashRouter>
-              <Switch>
-                  <Route exact path='/geoman' component={Geoman}/>
-                  <Route exact path='/' component={Home}/>
-                  <Route component={NotFound} status={404}/>
-              </Switch>
-          </HashRouter>
-      </div>
+    <>
+      <HashRouter>
+          <ChakraProvider>
+              <Link to="/">
+                  <Button m={1} colorScheme="blue">Home</Button>
+              </Link>
+              <Link to="/geoman">
+                  <Button m={1} colorScheme="blue">Geoman</Button>
+              </Link>
+          </ChakraProvider>
+          <Switch>
+              <Route exact path='/geoman' component={Geoman}/>
+              <Route exact path='/' component={Home}/>
+              <Route component={NotFound} status={404}/>
+          </Switch>
+      </HashRouter>
+    </>
   );
 }
 
