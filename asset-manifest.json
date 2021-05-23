@@ -1,21 +1,21 @@
 {
   "files": {
     "main.css": "/kartes/static/css/main.1635e87c.chunk.css",
-    "main.js": "/kartes/static/js/main.e6dab319.chunk.js",
-    "main.js.map": "/kartes/static/js/main.e6dab319.chunk.js.map",
+    "main.js": "/kartes/static/js/main.efaf3aae.chunk.js",
+    "main.js.map": "/kartes/static/js/main.efaf3aae.chunk.js.map",
     "runtime-main.js": "/kartes/static/js/runtime-main.bd4ce4c4.js",
     "runtime-main.js.map": "/kartes/static/js/runtime-main.bd4ce4c4.js.map",
-    "static/js/2.81fd79e9.chunk.js": "/kartes/static/js/2.81fd79e9.chunk.js",
-    "static/js/2.81fd79e9.chunk.js.map": "/kartes/static/js/2.81fd79e9.chunk.js.map",
+    "static/js/2.f830adf2.chunk.js": "/kartes/static/js/2.f830adf2.chunk.js",
+    "static/js/2.f830adf2.chunk.js.map": "/kartes/static/js/2.f830adf2.chunk.js.map",
     "index.html": "/kartes/index.html",
     "static/css/main.1635e87c.chunk.css.map": "/kartes/static/css/main.1635e87c.chunk.css.map",
-    "static/js/2.81fd79e9.chunk.js.LICENSE.txt": "/kartes/static/js/2.81fd79e9.chunk.js.LICENSE.txt",
+    "static/js/2.f830adf2.chunk.js.LICENSE.txt": "/kartes/static/js/2.f830adf2.chunk.js.LICENSE.txt",
     "static/media/logo.6ce24c58.svg": "/kartes/static/media/logo.6ce24c58.svg"
   },
   "entrypoints": [
     "static/js/runtime-main.bd4ce4c4.js",
-    "static/js/2.81fd79e9.chunk.js",
+    "static/js/2.f830adf2.chunk.js",
     "static/css/main.1635e87c.chunk.css",
-    "static/js/main.e6dab319.chunk.js"
+    "static/js/main.efaf3aae.chunk.js"
   ]
 }
