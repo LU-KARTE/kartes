@@ -22,8 +22,11 @@ import "@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css";
 
 // still to do
 // 1. add modal edit option (open modal, preferably with written previous data)
-// 2. remove unneeded stuff
-// 3. json bin ? or no.
+// 2. add some validation, for ID only numbers, both fields required etc
+// 3. is there a bug that first layer is removed even when submitting? First time had, then no.
+// 4. db schema - should data be grouped by floor number or floor number should be in properties field for each?
+// 5. remove unneeded stuff
+// 6. json bin ? or no.
 
 function GeomanPage(props) {
 
