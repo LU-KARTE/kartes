@@ -54,11 +54,11 @@ function GeomanPage(props) {
     function processLayers(layers) {
         let result = {
             "type": "GeometryCollection",
-            "features": {"1": [], "2": [], "3": [], "4": [], "5": []}
+            "features": []
         };
 
         for (let key in layers) {
-            let target = result.features[key];
+            let target = result.features;
             layers[key].forEach((el, index) => {
                 let shape = el.pm._shape;
 
@@ -73,6 +73,7 @@ function GeomanPage(props) {
                     "type": shape,
                     "id": key.toString() + index.toString(),
                     "properties": {
+                        "floor": key,
                         "roomID": el.LUProperties.id,
                         "roomType": el.LUProperties.type
                     },

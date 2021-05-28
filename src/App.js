@@ -2,6 +2,7 @@
 import { HashRouter, Switch, Route, Link } from 'react-router-dom'
 import {React, Component} from "react";
 import Home from './Components/Home';
+import Search from './Components/Search';
 import GeomanPage from './Components/GeomanPage';
 import { ChakraProvider, Button} from "@chakra-ui/react"
 import 'leaflet/dist/leaflet.css';
@@ -55,9 +56,13 @@ class App extends Component {
                         <Link to="/geoman">
                             <Button m={1} colorScheme="blue">Geoman</Button>
                         </Link>
+                        <Link to="/search">
+                            <Button m={1} colorScheme="blue">Search</Button>
+                        </Link>
                     </ChakraProvider>
                     <Switch>
                         <Route exact path='/geoman' render={(props) => (<GeomanPage {...props} pathToImg={pathToImg} bounds={bounds} center={center} theLayers={layers} />)}/>
+                        <Route exact path='/search' render={(props) => (<Search {...props} pathToImg={pathToImg} bounds={bounds} center={center} theLayers={layers} />)}/>
                         <Route exact path='/' render={(props) => (<Home {...props} pathToImg={pathToImg} bounds={bounds} center={center} theLayers={layers} />)}/>
                         <Route status={404}>
                             <div>Page not found.</div>

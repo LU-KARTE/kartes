@@ -1,0 +1,144 @@
+{
+  "type": "GeometryCollection",
+  "features": [
+    {
+      "type": "Rectangle",
+      "id": "10",
+      "properties": {
+        "floor": "1",
+        "roomID": "512",
+        "roomType": "kabinets"
+      },
+      "coordinates": [
+        [
+          324,
+          176
+        ],
+        [
+          324,
+          152
+        ],
+        [
+          371,
+          152
+        ],
+        [
+          371,
+          176
+        ]
+      ]
+    },
+    {
+      "type": "Rectangle",
+      "id": "11",
+      "properties": {
+        "floor": "1",
+        "roomID": "125",
+        "roomType": "laboratorija"
+      },
+      "coordinates": [
+        [
+          324,
+          198
+        ],
+        [
+          324,
+          176
+        ],
+        [
+          371,
+          176
+        ],
+        [
+          371,
+          198
+        ]
+      ]
+    },
+    {
+      "type": "Rectangle",
+      "id": "12",
+      "properties": {
+        "floor": "1",
+        "roomID": "199",
+        "roomType": "laboratorija"
+      },
+      "coordinates": [
+        [
+          324,
+          224
+        ],
+        [
+          324,
+          198
+        ],
+        [
+          371,
+          198
+        ],
+        [
+          371,
+          224
+        ]
+      ]
+    },
+    {
+      "type": "Polygon",
+      "id": "30",
+      "properties": {
+        "floor": "3",
+        "roomID": "331",
+        "roomType": "cits"
+      },
+      "coordinates": [
+        [
+          333,
+          125
+        ],
+        [
+          359,
+          125
+        ],
+        [
+          368,
+          135
+        ],
+        [
+          368,
+          172
+        ],
+        [
+          334,
+          174
+        ]
+      ]
+    },
+    {
+      "type": "Rectangle",
+      "id": "50",
+      "properties": {
+        "floor": "5",
+        "roomID": "534",
+        "roomType": "laboratorija"
+      },
+      "coordinates": [
+        [
+          334,
+          170
+        ],
+        [
+          334,
+          121
+        ],
+        [
+          372,
+          121
+        ],
+        [
+          372,
+          170
+        ]
+      ]
+    }
+  ]
+}

@@ -1,4 +1,4 @@
-import {React, Component} from 'react'
+import React, {Component} from 'react'
 import {ImageOverlay, LayersControl, MapContainer} from 'react-leaflet'
 import {CRS} from 'leaflet';
 
