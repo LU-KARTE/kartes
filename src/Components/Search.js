@@ -1,8 +1,11 @@
 import React, {useEffect, useState} from "react";
 import {
-    ChakraProvider, HStack, Input, InputGroup, InputLeftElement, Tag
+    Badge,
+    Box, Center,
+    ChakraProvider, Flex, HStack, Image, Input, InputGroup, InputLeftElement, Tag, Text
 } from "@chakra-ui/react";
-import { Search2Icon } from '@chakra-ui/icons'
+import {Search2Icon, StarIcon} from '@chakra-ui/icons'
+import {Link} from "react-router-dom";
 
 
 // inspired by https://codesandbox.io/s/practical-nightingale-m2b5n?file=/src/index.js
@@ -13,6 +16,45 @@ function Search() {
     const [searchItems, setSearchItems] = useState([]);
     // it outputs in frontend in the same order as the list is here
     const allFilters = {
+        "roomTypes" : [
+            {
+                "filterTerm": "kabinets",
+                "frontendName": "Kabineti",
+            },
+            {
+                "filterTerm": "laboratorija",
+                "frontendName": "Laboratorijas",
+            },
+            {
+                "filterTerm": "cits",
+                "frontendName": "Citi",
+            },
+        ],
+        "floors" : [
+            {
+                "filterTerm": "1",
+                "frontendName": "1. stāvs",
+            },
+            {
+                "filterTerm": "2",
+                "frontendName": "2. stāvs",
+            },
+            {
+                "filterTerm": "3",
+                "frontendName": "3. stāvs",
+            },
+            {
+                "filterTerm": "4",
+                "frontendName": "4. stāvs",
+            },
+            {
+                "filterTerm": "5",
+                "frontendName": "5. stāvs",
+            },
+        ]
+    }
+
+    const initval = {
         "roomTypes" : [
             "kabinets",
             "laboratorija",
@@ -26,8 +68,6 @@ function Search() {
             "5",
         ]
     }
-
-    const initval = allFilters;
     const [searchTags, setSearchTags] = useState(initval )
 
     const [searchTerm, setSearchTerm] = React.useState("");
@@ -101,10 +141,6 @@ function Search() {
                     let floorFilter = searchTags["floors"];
                     let roomTypesFilter = searchTags["roomTypes"];
 
-                    console.log(floorFilter);
-                    console.log(roomFloor);
-                    console.log(floorFilter.includes(roomFloor));
-
                     let filtersOK = roomTypesFilter.includes(roomType) && floorFilter.includes(roomFloor);
                     let searchParamsOK = roomID.includes(stLowered) || roomType.includes(stLowered);
 
@@ -119,44 +155,60 @@ function Search() {
         }
     }, [searchTerm, searchTags, searchItems]);
 
+
+
+    const property = {
+        imageUrl: "https://bit.ly/2Z4KKcF",
+        imageAlt: "Rear view of modern home with pool",
+        beds: 3,
+        baths: 2,
+        title: "Modern home in city center in the heart of historic Los Angeles",
+        formattedPrice: "$1,900.00",
+        reviewCount: 34,
+        rating: 4,
+    }
+
     return (
         <div className="App">
             <ChakraProvider>
-                <InputGroup w={301}>
-                    <InputLeftElement
-                        pointerEvents="none"
-                        children={<Search2Icon color="gray.300" />}
-                    />
-                    <Input
-                        type="text"
-                        placeholder="Meklēt..."
-                        value={searchTerm}
-                        onChange={handleChange}
-                    />
-                </InputGroup>
-
+                    <InputGroup ml={2} maxW={500} w={["96%", "97%", "98%"]}>
+                        <InputLeftElement
+                            pointerEvents="none"
+                            children={<Search2Icon color="gray.300" />}
+                        />
+                        <Input
+                            type="text"
+                            placeholder="Meklēt..."
+                            value={searchTerm}
+                            onChange={handleChange}
+                        />
+                    </InputGroup>
                 {/* display filter tags */}
-                <HStack spacing={1} m={1}>
+                <Flex css={{
+                    flexFlow: "row wrap"
+                }} maxW={500} m={1}>
                     {
                         Object.keys(allFilters).map((key) => {
                             return allFilters[key].map(filterItem => {
+
+                                // if filter is active, set color to blue; otherwise, gray
                                 let color = "";
-                                // console.log("HEREE");
-                                // console.log(searchTags);
-                                searchTags[key].includes(filterItem) ? color = "blue" : color = "gray"
+
+                                searchTags[key].includes(filterItem["filterTerm"]) ? color = "blue" : color = "gray"
+
                                 return (
-                                    <Tag size="sm" colorScheme={color} key={filterItem} data-filtertype={key} data-filtername={filterItem}
+                                    <Tag m={1} size={"lg"} colorScheme={color} key={filterItem["filterTerm"]} data-filtertype={key} data-filtername={filterItem["filterTerm"]}
                                          onClick={(e) => handleTagChange(e)}>
-                                        {filterItem}
+                                        {filterItem["frontendName"]}
                                     </Tag> )
                             })
                         })
                     }
-                </HStack>
+                </Flex>
 
                 <div>
 
-                    {/*/!* current filter list *!/*/}
+                    {/* current filter list */}
                     {/*<ul>*/}
                     {/*    {*/}
                     {/*        Object.keys(searchTags).map((key) => {*/}
@@ -172,11 +224,30 @@ function Search() {
 
 
                     {/* search results list */}
-                    <ul>
                         {searchResults.map((item, key) => (
-                            <li key={"item-" +key} >{item["properties"]["floor"]}. stāvs &nbsp; {item["properties"]["roomID"]}.{item["properties"]["roomType"]}</li>
+                            <Box shadow={"md"} key={key} m={2} maxW="sm" borderWidth="1px" borderRadius="md" overflow="hidden">
+
+                                <Link to={"/"+item["properties"]["roomID"]}>
+                                    <Box key={key + "-header"} bg="#f2f8fc">
+                                        <Box p={2}>
+                                            <Text>{item["properties"]["floor"]}. stāvs</Text>
+                                        </Box>
+                                    </Box>
+
+                                    <Box key={key + "-body"} p={2}>
+                                        <HStack>
+                                            <Text fontSize={"xl"}>
+                                                {item["properties"]["roomID"]}
+                                            </Text>
+                                            <Text>
+                                                {item["properties"]["roomType"]}
+                                            </Text>
+                                        </HStack>
+                                    </Box>
+                                </Link>
+                            </Box>
                         ))}
-                    </ul>
+                    {/*<li key={"item-" +key} >{item["properties"]["floor"]}. stāvs &nbsp; {item["properties"]["roomID"]}.{item["properties"]["roomType"]}</li>*/}
                 </div>
             </ChakraProvider>
         </div>

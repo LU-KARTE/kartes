@@ -59,11 +59,14 @@ class App extends Component {
                         <Link to="/search">
                             <Button m={1} colorScheme="blue">Search</Button>
                         </Link>
+                        <Link to="/512">
+                            <Button m={1} colorScheme="blue">Search for #512</Button>
+                        </Link>
                     </ChakraProvider>
                     <Switch>
                         <Route exact path='/geoman' render={(props) => (<GeomanPage {...props} pathToImg={pathToImg} bounds={bounds} center={center} theLayers={layers} />)}/>
                         <Route exact path='/search' render={(props) => (<Search {...props} pathToImg={pathToImg} bounds={bounds} center={center} theLayers={layers} />)}/>
-                        <Route exact path='/' render={(props) => (<Home {...props} pathToImg={pathToImg} bounds={bounds} center={center} theLayers={layers} />)}/>
+                        <Route exact path='/:id?' render={(props) => (<Home {...props} pathToImg={pathToImg} bounds={bounds} center={center} theLayers={layers} />)}/>
                         <Route status={404}>
                             <div>Page not found.</div>
                         </Route>
