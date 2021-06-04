@@ -6,6 +6,7 @@ import {
 } from "@chakra-ui/react";
 import {Search2Icon, StarIcon} from '@chakra-ui/icons'
 import {Link} from "react-router-dom";
+import SearchInputField from './SearchInput';
 
 
 // inspired by https://codesandbox.io/s/practical-nightingale-m2b5n?file=/src/index.js
@@ -171,22 +172,11 @@ function Search() {
     return (
         <div className="App">
             <ChakraProvider>
-                    <InputGroup ml={2} maxW={500} w={["96%", "97%", "98%"]}>
-                        <InputLeftElement
-                            pointerEvents="none"
-                            children={<Search2Icon color="gray.300" />}
-                        />
-                        <Input
-                            type="text"
-                            placeholder="Meklēt..."
-                            value={searchTerm}
-                            onChange={handleChange}
-                        />
-                    </InputGroup>
+                <SearchInputField searchTerm={searchTerm} handleChange={handleChange}/>
                 {/* display filter tags */}
                 <Flex css={{
                     flexFlow: "row wrap"
-                }} maxW={500} m={1}>
+                }} m={1}>
                     {
                         Object.keys(allFilters).map((key) => {
                             return allFilters[key].map(filterItem => {

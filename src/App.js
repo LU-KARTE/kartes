@@ -1,13 +1,54 @@
-// import $ from 'jquery';
 import { HashRouter, Switch, Route, Link } from 'react-router-dom'
-import {React, Component} from "react";
+import React, {Component} from "react";
 import Home from './Components/Home';
 import Search from './Components/Search';
 import GeomanPage from './Components/GeomanPage';
-import { ChakraProvider, Button} from "@chakra-ui/react"
+import SearchInputField from './Components/SearchInput';
+import {Button, Flex, Box, Spacer, Image, Center, Text, HStack} from "@chakra-ui/react"
 import 'leaflet/dist/leaflet.css';
+import {ChevronLeftIcon, ChevronRightIcon, HamburgerIcon} from "@chakra-ui/icons";
+import $ from "jquery";
+
+const MAXFLOOR = 5;
 
 class App extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            searchTerm: "",
+            currentFloor: 1
+        };
+        this.handleChange = this.handleChange.bind(this);
+    }
+
+
+    componentDidMount() {
+        $(document).ready(() => {
+            $("#FloorDownIcon").on("click", () => {
+                if (this.state.currentFloor > 1) {
+                    this.setState(prevstate => (
+                        {"currentFloor": prevstate["currentFloor"] - 1}
+                    ))
+                }
+            })
+
+            $("#FloorUpIcon").on("click", () => {
+                if (this.state.currentFloor < MAXFLOOR)
+                this.setState(prevstate => (
+                    {"currentFloor": prevstate["currentFloor"] + 1}
+                ))
+            })
+        })
+    }
+
+    handleChange (e) {
+        this.setState(prevState => {
+                return {searchTerm: e.target.value}
+            }
+        );
+        console.log("Search term updated : " + this.state.searchTerm);
+    }
+
     render() {
         // adjust img url
         const baseUrl = window.location.origin;
@@ -45,32 +86,51 @@ class App extends Component {
 
         }
 
-
         return (
             <>
                 <HashRouter>
-                    <ChakraProvider>
-                        <Link to="/">
-                            <Button m={1} colorScheme="blue">Home</Button>
-                        </Link>
-                        <Link to="/geoman">
-                            <Button m={1} colorScheme="blue">Geoman</Button>
-                        </Link>
-                        <Link to="/search">
-                            <Button m={1} colorScheme="blue">Search</Button>
-                        </Link>
-                        <Link to="/512">
-                            <Button m={1} colorScheme="blue">Search for #512</Button>
-                        </Link>
-                    </ChakraProvider>
+                    <Flex p={4}>
+                        {/*<Box>*/}
+                            {/*<Image h={50} src={pathToImg + "logo.png"}  fallbackSrc="https://via.placeholder.com/150" />*/}
+                        {/*</Box>*/}
+                        {/*<Spacer />*/}
+                        <Center width="full">
+                            <Box width="full">
+                                <SearchInputField searchTerm={this.state.searchTerm} handleChange={this.handleChange}/>
+                            </Box>
+                        </Center>
+                    </Flex>
+                    <Flex mr={4}>
+                        <Spacer />
+                        <Center>
+                            <ChevronLeftIcon id="FloorDownIcon" style={{"cursor": "pointer"}} w={8} h={8}/>
+                            <Text fontSize={20}>{this.state.currentFloor}. Stāvs</Text>
+                            <ChevronRightIcon id="FloorUpIcon" style={{"cursor": "pointer"}} w={8} h={8}/>
+                        </Center>
+                    </Flex>
                     <Switch>
                         <Route exact path='/geoman' render={(props) => (<GeomanPage {...props} pathToImg={pathToImg} bounds={bounds} center={center} theLayers={layers} />)}/>
                         <Route exact path='/search' render={(props) => (<Search {...props} pathToImg={pathToImg} bounds={bounds} center={center} theLayers={layers} />)}/>
+                        {/*<Route exact path='/header' render={(props) => (<Header {...props} pathToImg={pathToImg}/>)}/>*/}
                         <Route exact path='/:id?' render={(props) => (<Home {...props} pathToImg={pathToImg} bounds={bounds} center={center} theLayers={layers} />)}/>
                         <Route status={404}>
                             <div>Page not found.</div>
                         </Route>
                     </Switch>
+
+
+                    <Link to="/">
+                        <Button size="xs" m={1} colorScheme="blue">Home</Button>
+                    </Link>
+                    <Link to="/geoman">
+                        <Button size="xs" m={1} colorScheme="blue">Geoman</Button>
+                    </Link>
+                    <Link to="/search">
+                        <Button size="xs" m={1} colorScheme="blue">Search</Button>
+                    </Link>
+                    <Link to="/512">
+                        <Button size="xs" m={1} colorScheme="blue">Search for #512</Button>
+                    </Link>
                 </HashRouter>
             </>
         )
