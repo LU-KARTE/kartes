@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 import $ from 'jquery'
 import {
     Button,
@@ -37,6 +37,7 @@ function GeomanPage(props) {
         onClose() { $("#cancelButton").click(); }
     }) // for modal
     const idRef = React.useRef() // for modal
+    const [JSONData, LoadJSONData] = useState({})
 
 
     function printJSON() {
@@ -113,6 +114,26 @@ function GeomanPage(props) {
 
     $(document).ready(function() {
         let map = mapRef.current;
+
+        $("#button-clear").on("click", () => {
+            $("#bin-data-sent").html("");
+            $("#bin-data-received-content").html("");
+        });
+
+        $("#button-receive-data").on("click", () => {
+            fetch("/kartes/data.json")
+                .then(res => res.json())
+                .then(
+                    (result) => {
+                        LoadJSONData(result);
+                        $("#bin-data-received-content").html(JSON.stringify(result));
+                    },
+                    (error) => {
+                        // ... some error parsing
+                    }
+                )
+        })
+
         if (map) {
             map.pm.addControls({
                 drawCircleMarker: false,
@@ -156,10 +177,10 @@ function GeomanPage(props) {
     //
     return (
         <div id="geoman-wrapper">
-            <ChakraProvider>
-                <Button m={1} onClick={printJSON} id="button-geoJSON">GeoJSON</Button>
-                <Button m={1} id="button-clear">Clear printed data</Button>
-                <Button m={1} id="button-draw">Refresh data and draw</Button>
+                <Button m={1} onClick={printJSON} id="button-geoJSON">Generate JSON</Button>
+                <Button m={1} id="button-receive-data">Receive data</Button>
+                <Button m={1} id="button-clear">Clear data</Button>
+
                 <Modal
                     initialFocusRef={idRef}
                     isOpen={isOpen}
@@ -196,10 +217,8 @@ function GeomanPage(props) {
                     </ModalContent>
                 </Modal>
 
-            </ChakraProvider>
             <div id="bin-data-sent" className="bin-data"/>
-            <div id="bin-data-received-content" className="bin-data"/>
-            <div id="bin-data-received-metadata" className="bin-data"/>
+            <div id="bin-data-received-content" className="bin-data"></div>
             <MapContainer whenCreated={(mapInstance)=> { mapRef.current = mapInstance }} bounds={props.bounds} center={props.center} maxZoom={1} minZoom={-5} doubleClickZoom={false} crs={CRS.Simple}>
                 <LayersControl position="topright" collapsed={false}>
                     {/* layers + layer control */}

@@ -9,36 +9,17 @@ import 'leaflet/dist/leaflet.css';
 import {ChevronLeftIcon, ChevronRightIcon, HamburgerIcon} from "@chakra-ui/icons";
 import $ from "jquery";
 
-const MAXFLOOR = 5;
-
 class App extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            searchTerm: "",
-            currentFloor: 1
+            searchTerm: ""
         };
         this.handleChange = this.handleChange.bind(this);
     }
 
 
     componentDidMount() {
-        $(document).ready(() => {
-            $("#FloorDownIcon").on("click", () => {
-                if (this.state.currentFloor > 1) {
-                    this.setState(prevstate => (
-                        {"currentFloor": prevstate["currentFloor"] - 1}
-                    ))
-                }
-            })
-
-            $("#FloorUpIcon").on("click", () => {
-                if (this.state.currentFloor < MAXFLOOR)
-                this.setState(prevstate => (
-                    {"currentFloor": prevstate["currentFloor"] + 1}
-                ))
-            })
-        })
     }
 
     handleChange (e) {
@@ -100,14 +81,7 @@ class App extends Component {
                             </Box>
                         </Center>
                     </Flex>
-                    <Flex mr={4}>
-                        <Spacer />
-                        <Center>
-                            <ChevronLeftIcon id="FloorDownIcon" style={{"cursor": "pointer"}} w={8} h={8}/>
-                            <Text fontSize={20}>{this.state.currentFloor}. Stāvs</Text>
-                            <ChevronRightIcon id="FloorUpIcon" style={{"cursor": "pointer"}} w={8} h={8}/>
-                        </Center>
-                    </Flex>
+
                     <Switch>
                         <Route exact path='/geoman' render={(props) => (<GeomanPage {...props} pathToImg={pathToImg} bounds={bounds} center={center} theLayers={layers} />)}/>
                         <Route exact path='/search' render={(props) => (<Search {...props} pathToImg={pathToImg} bounds={bounds} center={center} theLayers={layers} />)}/>
