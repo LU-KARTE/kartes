@@ -13,14 +13,14 @@ class Home extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            currentBaseLayerFloorNumber: 1
+            currentBaseLayerFloorNumber: 1,
+            roomID: this.props.match.params.id
         };
     }
 
     componentDidMount() {
-        const id = this.props.match.params.id;
+        const id = this.state.roomID;
         this.fetchData(id);
-
 
         $(document).ready(() => {
             $("#FloorDownIcon").on("click", () => {
@@ -41,14 +41,17 @@ class Home extends Component {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        const id = this.props.match.params.id;
+        if (this.state.roomID !== this.props.match.params.id) {
+            this.setState({roomID: this.props.match.params.id});
+        }
+        const id = this.state.roomID;
         this.fetchData(id);
     }
 
     fetchData = id => {
         if (!id) return;
 
-        alert("[check console] Search for room #" + id);
+        // alert("[check console] Search for room #" + id);
 
         fetch("/kartes/data.json")
             .then(res => res.json())
@@ -88,6 +91,10 @@ class Home extends Component {
         return (
             <>
                 <Flex mr={4}>
+                    {this.state.roomID ?
+                        <Text pl={4}>Tiek meklēts #{this.state.roomID}</Text>
+                        : ""
+                    }
                     <Spacer />
                     <Center>
                         <ChevronLeftIcon id="FloorDownIcon" style={{"cursor": "pointer"}} w={8} h={8}/>
@@ -95,6 +102,7 @@ class Home extends Component {
                         <ChevronRightIcon id="FloorUpIcon" style={{"cursor": "pointer"}} w={8} h={8}/>
                     </Center>
                 </Flex>
+
 
                 <MapContainer bounds={this.props.bounds} center={this.props.center} minZoom={-5} doubleClickZoom={false} crs={CRS.Simple}>
                     <LayersControl position="topright" collapsed={false}>

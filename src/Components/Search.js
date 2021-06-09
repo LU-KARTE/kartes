@@ -27,7 +27,7 @@ import $ from 'jquery';
 // inspired by https://codesandbox.io/s/practical-nightingale-m2b5n?file=/src/index.js
 const MAXSEARCHLISTROWS = 1000;
 
-function Search() {
+function Search(props) {
     const [error, setError] = useState(null);
     const [isSearchLoaded, setSearchIsLoaded] = useState(false);
     const [displayResultsList, setDisplayResultsList] = useState("none"); // none or block
@@ -161,6 +161,7 @@ function Search() {
     function resetFilters() {
         setSearchTags(initval);
     }
+
     // to indicate how good the result is (depends on specific feature properties and search terms splitted)
     function assignPoints(feature) {
         let stLowered = searchTerm.toLowerCase().replace(/[^a-z0-9 ]/gi,'').trim(); // search term whole
@@ -287,14 +288,14 @@ function Search() {
                         {searchResults.length > 1 ?
                             // (Object.keys(searchResults[1]).length === 0 ? 1 : MAXSEARCHLISTROWS) ==> this could be just MAXSEARCHLISTROWS but due #999872 it is so that does not break if only one result found.
                             searchResults.slice(0, (Object.keys(searchResults[1]).length === 0 ? 1 : MAXSEARCHLISTROWS)).map((item, key) => (
-                                <Link key={key}  to={"/"+item["properties"]["roomID"]}>
+                                <Link onClick={() => setDisplayResultsList("none")} key={key} to={"/"+item["properties"]["roomID"]}>
                                     <ListItem _hover={{ bg: "#f1f1f1" }} p={3}>
                                         <Flex>
-                                            <Text fontSize={"md"}>
-                                                {item["properties"]["roomID"] + ". " + item["properties"]["roomType"]}
+                                            <Text>
+                                                {item["properties"]["roomID"] + ". " + item["properties"]["roomType"].substr(0,1).toUpperCase() + item["properties"]["roomType"].substr(1)} {/* capitalize */}
                                             </Text>
                                             <Spacer />
-                                            <Text>{item["properties"]["floor"]}. stāvs</Text>
+                                            <Text> {item["properties"]["floor"]}. stāvs</Text>
                                         </Flex>
                                     </ListItem>
                                     <Divider />

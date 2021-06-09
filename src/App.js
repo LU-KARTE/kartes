@@ -31,16 +31,11 @@ class App extends Component {
         this.handleChange = this.handleChange.bind(this);
     }
 
-
-    componentDidMount() {
-    }
-
     handleChange (e) {
         this.setState(prevState => {
                 return {searchTerm: e.target.value}
             }
         );
-        console.log("Search term updated : " + this.state.searchTerm);
     }
 
     render() {
@@ -88,30 +83,6 @@ class App extends Component {
                             {/*<Image h={50} src={pathToImg + "logo.png"}  fallbackSrc="https://via.placeholder.com/150" />*/}
                         {/*</Box>*/}
                         {/*<Spacer />*/}
-
-                        {/*<Center width="full">*/}
-                        {/*    <VStack width="full" style={{}}>*/}
-                        {/*        <Box width="full">*/}
-                        {/*            <SearchInputField searchTerm={this.state.searchTerm} handleChange={this.handleChange}/>*/}
-                        {/*        </Box>*/}
-                        {/*        <Box width="full" borderWidth="1px" borderRadius="lg"  style={{}}>*/}
-                        {/*            <List spacing={3} p={3}>*/}
-                        {/*                <ListItem>*/}
-                        {/*                    /!*<ListIcon color="green.500" />*!/*/}
-                        {/*                    721. kabinets*/}
-                        {/*                </ListItem>*/}
-                        {/*                <ListItem>*/}
-                        {/*                    /!*<ListIcon color="green.500" />*!/*/}
-                        {/*                    213. kabinets*/}
-                        {/*                </ListItem>*/}
-                        {/*                <ListItem>*/}
-                        {/*                    /!*<ListIcon color="green.500" />*!/*/}
-                        {/*                    414. kabinets*/}
-                        {/*                </ListItem>*/}
-                        {/*            </List>*/}
-                        {/*        </Box>*/}
-                        {/*    </VStack>*/}
-                        {/*</Center>*/}
 
                         <Search />
                     </Flex>
