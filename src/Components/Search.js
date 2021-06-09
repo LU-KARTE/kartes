@@ -11,7 +11,7 @@ import $ from 'jquery';
 
 
 // inspired by https://codesandbox.io/s/practical-nightingale-m2b5n?file=/src/index.js
-const MAXSEARCHLISTROWS = 3;
+const MAXSEARCHLISTROWS = 5;
 
 function Search() {
     const [error, setError] = useState(null);
@@ -140,50 +140,59 @@ function Search() {
     }, [])
 
 
+    // to indicate how good the result is (depends on specific feature properties and search terms splitted)
+    function assignPoints(feature) {
+        let stLowered = searchTerm.toLowerCase().replace(/[^a-z0-9 ]/gi,''); // search term whole
+        let roomID = feature["properties"]["roomID"].toLowerCase();
+        let roomType = feature["properties"]["roomType"].toLowerCase();
+        let roomFloor = feature["properties"]["floor"].toLowerCase();
+
+        let searchWords = stLowered.split(" "); // array of words (search terms)
+
+        let floorFilter = searchTags["floors"];
+        let roomTypesFilter = searchTags["roomTypes"];
+
+        let filtersOK = roomTypesFilter.includes(roomType) && floorFilter.includes(roomFloor);
+
+        if (!filtersOK) return 0;
+
+        // award points to the potential search result
+        let includesPoints = 0.3;
+        let equalPoints = 1.0;
+        let points = 0;
+        let searchWordsLength = searchWords.length;
+
+        if (searchWordsLength === 0 || (searchWordsLength === 1 && searchWords[0] === "")) return 1;
+
+        for (let i = 0; i < searchWordsLength; i++) {
+            if (searchWords[i] === "")
+                continue;
+            if (roomID === searchWords[i])
+                points += equalPoints;
+            else if (roomID.includes(searchWords[i]))
+                points += includesPoints;
+            if (roomType === searchWords[i])
+                points += equalPoints;
+            else if (roomType.includes(searchWords[i]))
+                points += includesPoints;
+        }
+
+
+        return points;
+    }
+
     // search logic
     React.useEffect(() => {
         if (isSearchLoaded) {
-            const results = searchItems["features"].filter(feature => {
-                    let stLowered = searchTerm.toLowerCase().replace(/[^a-z0-9 ]/gi,''); // search term whole
-                    let roomID = feature["properties"]["roomID"].toLowerCase();
-                    let roomType = feature["properties"]["roomType"].toLowerCase();
-                    let roomFloor = feature["properties"]["floor"].toLowerCase();
+            const itemsToSort = JSON.parse(JSON.stringify(searchItems["features"]));
+            const results = itemsToSort.sort((feature1, feature2) => {
+                    let points1 = assignPoints(feature1); // points indicate how "suitable" the result is
+                    let points2 = assignPoints(feature2);
 
-                    let searchWords = stLowered.split(" "); // array of words (search terms)
+                    if (points1 > points2) return -1;
+                    else if (points1 < points2) return 1;
+                    else return 0;
 
-                    let floorFilter = searchTags["floors"];
-                    let roomTypesFilter = searchTags["roomTypes"];
-
-                    let filtersOK = roomTypesFilter.includes(roomType) && floorFilter.includes(roomFloor);
-
-                    // award points to the potential search result
-                    let includesPoints = 0.5;
-                    let equalPoints = 1.0;
-                    let points = 0;
-                    let searchWordsLength = searchWords.length;
-
-                    if (searchWordsLength === 0 || (searchWordsLength === 1 && searchWords[0] === "")) return true;
-
-                    for (let i = 0; i < searchWordsLength; i++) {
-                        if (searchWords[i] === "")
-                            continue;
-                        if (roomID === searchWords[i])
-                            points += equalPoints;
-                        else if (roomID.includes(searchWords[i]))
-                            points += includesPoints;
-                        if (roomType === searchWords[i])
-                            points += equalPoints;
-                        else if (roomType.includes(searchWords[i]))
-                            points += includesPoints;
-                    }
-
-                    // let searchParamsOK = roomID.includes(searchWords) || roomType.includes(searchWords);
-                    let searchParamsOK = points > 0;
-
-                    return filtersOK && searchParamsOK;
-
-                    // return feature["properties"]["roomID"].toLowerCase().includes(searchTerm.toLowerCase()) ||
-                    //     feature["properties"]["roomType"].toLowerCase().includes(searchTerm.toLowerCase());
                 }
             )
 
@@ -194,29 +203,6 @@ function Search() {
     return (
         <Box id="searchWrapper" width="full" className="App" onFocus={() => setDisplayResultsList("block")}>
                 <SearchInputField searchTerm={searchTerm} handleChange={handleChange}/>
-                {/* display filter tags */}
-
-                {/*<Flex css={{*/}
-                {/*    flexFlow: "row wrap"*/}
-                {/*}} m={1}>*/}
-                {/*    {*/}
-                {/*        Object.keys(allFilters).map((key) => {*/}
-                {/*            return allFilters[key].map(filterItem => {*/}
-
-                {/*                // if filter is active, set color to blue; otherwise, gray*/}
-                {/*                let color = "";*/}
-
-                {/*                searchTags[key].includes(filterItem["filterTerm"]) ? color = "blue" : color = "gray"*/}
-
-                {/*                return (*/}
-                {/*                    <Tag m={1} size={"lg"} colorScheme={color} key={filterItem["filterTerm"]} data-filtertype={key} data-filtername={filterItem["filterTerm"]}*/}
-                {/*                         onClick={(e) => handleTagChange(e)}>*/}
-                {/*                        {filterItem["frontendName"]}*/}
-                {/*                    </Tag> )*/}
-                {/*            })*/}
-                {/*        })*/}
-                {/*    }*/}
-                {/*</Flex>*/}
 
 
                 <div>
@@ -224,40 +210,42 @@ function Search() {
                     {/* search results list */}
                     {/*<Text mt={3} mb={3}><b>Atrastās telpas:</b></Text>*/}
                     <List spacing={0} shadow={"md"} style={{display: displayResultsList}}>
+                        <ListItem key="filterTags" pt={1}>
+                            {/* display filter tags */}
+                            <Flex css={{
+                                flexFlow: "row wrap"
+                            }} m={1}>
+                                {
+                                    Object.keys(allFilters).map((key) => {
+                                        return allFilters[key].map(filterItem => {
+
+                                            // if filter is active, set color to blue; otherwise, gray
+                                            let color = "";
+
+                                            searchTags[key].includes(filterItem["filterTerm"]) ? color = "blue" : color = "gray"
+
+                                            return (
+                                                <Tag m={1} size={"lg"} colorScheme={color} key={filterItem["filterTerm"]} data-filtertype={key} data-filtername={filterItem["filterTerm"]}
+                                                     onClick={(e) => handleTagChange(e)}>
+                                                    {filterItem["frontendName"]}
+                                                </Tag> )
+                                        })
+                                    })
+                                }
+                            </Flex>
+                        </ListItem>
                         {searchResults.slice(0, MAXSEARCHLISTROWS).map((item, key) => (
-                                <ListItem key={key} _hover={{ bg: "#f1f1f1" }} p={3}>
-                                    <Link to={"/"+item["properties"]["roomID"]}>
-                                        <Flex>
-                                            <Text fontSize={"md"}>
-                                                {item["properties"]["roomID"] + ". " + item["properties"]["roomType"]}
-                                            </Text>
-                                            <Spacer />
-                                            <Text>{item["properties"]["floor"]}. stāvs</Text>
-                                        </Flex>
-                                    </Link>
-                                {/*    */}
-                                {/*<Box shadow={"md"} key={key} maxW="sm" borderWidth="1px" borderRadius="md" overflow="hidden">*/}
-
-                                {/*    <Link to={"/"+item["properties"]["roomID"]}>*/}
-                                {/*        <Box key={key + "-header"} bg="#f2f8fc">*/}
-                                {/*            <Box p={2}>*/}
-                                {/*                <Text>{item["properties"]["floor"]}. stāvs</Text>*/}
-                                {/*            </Box>*/}
-                                {/*        </Box>*/}
-
-                                {/*        <Box key={key + "-body"} p={2}>*/}
-                                {/*            <HStack>*/}
-                                {/*                <Text fontSize={"xl"}>*/}
-                                {/*                    {item["properties"]["roomID"]}*/}
-                                {/*                </Text>*/}
-                                {/*                <Text>*/}
-                                {/*                    {item["properties"]["roomType"]}*/}
-                                {/*                </Text>*/}
-                                {/*            </HStack>*/}
-                                {/*        </Box>*/}
-                                {/*    </Link>*/}
-                                {/*</Box>*/}
-                            </ListItem>
+                            <Link key={key}  to={"/"+item["properties"]["roomID"]}>
+                                <ListItem _hover={{ bg: "#f1f1f1" }} p={3}>
+                                    <Flex>
+                                        <Text fontSize={"md"}>
+                                            {item["properties"]["roomID"] + ". " + item["properties"]["roomType"]}
+                                        </Text>
+                                        <Spacer />
+                                        <Text>{item["properties"]["floor"]}. stāvs</Text>
+                                    </Flex>
+                                </ListItem>
+                            </Link>
                         ))}
                     </List>
                     {/*<li key={"item-" +key} >{item["properties"]["floor"]}. stāvs &nbsp; {item["properties"]["roomID"]}.{item["properties"]["roomType"]}</li>*/}
