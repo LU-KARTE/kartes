@@ -158,6 +158,9 @@ function Search() {
         });
     }, [])
 
+    function resetFilters() {
+        setSearchTags(initval);
+    }
     // to indicate how good the result is (depends on specific feature properties and search terms splitted)
     function assignPoints(feature) {
         let stLowered = searchTerm.toLowerCase().replace(/[^a-z0-9 ]/gi,'').trim(); // search term whole
@@ -238,7 +241,8 @@ function Search() {
 
                         {/* display filter tags */}
                         <ListItem key="filterTags" p={3} pb={0}>
-                            <Button size="xs" onClick={handleToggleFilters}>Iestatīt filtrus</Button>
+                            <Button size="sm" onClick={handleToggleFilters}>{showAllFilters ? "Aizvērt" : "Atvērt"} filtrus</Button>
+                            <Button ml={2} size="sm" onClick={resetFilters}>Izslēgt filtrus</Button>
                             <Collapse startingHeight={0} in={showAllFilters}>
                                 <Flex css={{
                                     flexFlow: "row wrap"
@@ -254,7 +258,7 @@ function Search() {
                                                 searchTags[key].includes(filterItem["filterTerm"]) ? color = "blue" : color = "gray"
 
                                                 return (
-                                                    <Tag mr={1} mt={1} size={"md"} colorScheme={color} key={filterItem["filterTerm"]} data-filtertype={key} data-filtername={filterItem["filterTerm"]}
+                                                    <Tag mr={2} mt={2} size={"lg"} colorScheme={color} key={filterItem["filterTerm"]} data-filtertype={key} data-filtername={filterItem["filterTerm"]}
                                                          onClick={(e) => handleTagChange(e)}>
                                                         {filterItem["frontendName"]}
                                                     </Tag> )
