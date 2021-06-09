@@ -4,7 +4,20 @@ import Home from './Components/Home';
 import Search from './Components/Search';
 import GeomanPage from './Components/GeomanPage';
 import SearchInputField from './Components/SearchInput';
-import {Button, Flex, Box, Spacer, Image, Center, Text, HStack} from "@chakra-ui/react"
+import {
+    Button,
+    Flex,
+    Box,
+    Spacer,
+    Image,
+    Center,
+    Text,
+    HStack,
+    VStack,
+    List,
+    ListIcon,
+    ListItem, Divider
+} from "@chakra-ui/react"
 import 'leaflet/dist/leaflet.css';
 import {ChevronLeftIcon, ChevronRightIcon, HamburgerIcon} from "@chakra-ui/icons";
 import $ from "jquery";
@@ -75,11 +88,32 @@ class App extends Component {
                             {/*<Image h={50} src={pathToImg + "logo.png"}  fallbackSrc="https://via.placeholder.com/150" />*/}
                         {/*</Box>*/}
                         {/*<Spacer />*/}
-                        <Center width="full">
-                            <Box width="full">
-                                <SearchInputField searchTerm={this.state.searchTerm} handleChange={this.handleChange}/>
-                            </Box>
-                        </Center>
+
+                        {/*<Center width="full">*/}
+                        {/*    <VStack width="full" style={{}}>*/}
+                        {/*        <Box width="full">*/}
+                        {/*            <SearchInputField searchTerm={this.state.searchTerm} handleChange={this.handleChange}/>*/}
+                        {/*        </Box>*/}
+                        {/*        <Box width="full" borderWidth="1px" borderRadius="lg"  style={{}}>*/}
+                        {/*            <List spacing={3} p={3}>*/}
+                        {/*                <ListItem>*/}
+                        {/*                    /!*<ListIcon color="green.500" />*!/*/}
+                        {/*                    721. kabinets*/}
+                        {/*                </ListItem>*/}
+                        {/*                <ListItem>*/}
+                        {/*                    /!*<ListIcon color="green.500" />*!/*/}
+                        {/*                    213. kabinets*/}
+                        {/*                </ListItem>*/}
+                        {/*                <ListItem>*/}
+                        {/*                    /!*<ListIcon color="green.500" />*!/*/}
+                        {/*                    414. kabinets*/}
+                        {/*                </ListItem>*/}
+                        {/*            </List>*/}
+                        {/*        </Box>*/}
+                        {/*    </VStack>*/}
+                        {/*</Center>*/}
+
+                        <Search />
                     </Flex>
 
                     <Switch>
