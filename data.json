@@ -114,6 +114,37 @@
       ]
     },
     {
+      "type": "Polygon",
+      "id": "31",
+      "properties": {
+        "floor": "3",
+        "roomID": "341",
+        "roomType": "laboratorija"
+      },
+      "coordinates": [
+        [
+          333,
+          125
+        ],
+        [
+          359,
+          125
+        ],
+        [
+          368,
+          135
+        ],
+        [
+          368,
+          172
+        ],
+        [
+          334,
+          174
+        ]
+      ]
+    },
+    {
       "type": "Rectangle",
       "id": "50",
       "properties": {
