@@ -25,7 +25,7 @@ import $ from 'jquery';
 
 
 // inspired by https://codesandbox.io/s/practical-nightingale-m2b5n?file=/src/index.js
-const MAXSEARCHLISTROWS = 5;
+const MAXSEARCHLISTROWS = 1000;
 
 function Search() {
     const [error, setError] = useState(null);
@@ -237,7 +237,19 @@ function Search() {
                 <div>
                     {/* search results list */}
                     {/*<Text mt={3} mb={3}><b>Atrastās telpas:</b></Text>*/}
-                    <List spacing={0} shadow={"md"} style={{display: displayResultsList}}>
+                    <List spacing={0} shadow={"md"} style={{display: displayResultsList}} maxH={300} overflow={"scroll"}
+                          css={{
+                        '&::-webkit-scrollbar': {
+                            width: '4px',
+                        },
+                        '&::-webkit-scrollbar-track': {
+                            width: '6px',
+                        },
+                        '&::-webkit-scrollbar-thumb': {
+                            background: "#bbb",
+                            borderRadius: '24px',
+                        },
+                    }}>
 
                         {/* display filter tags */}
                         <ListItem key="filterTags" p={3} pb={0}>
@@ -268,6 +280,7 @@ function Search() {
                                 </Flex>
 
                             </Collapse>
+                            <Divider mt={1}/>
                         </ListItem>
 
                         {/* Display search results */}
