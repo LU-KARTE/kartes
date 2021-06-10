@@ -14,8 +14,9 @@ import {
     LayerGroup,
     LayersControl,
     ImageOverlay,
+    Polygon
 } from "react-leaflet";
-import {CRS, Polygon, Polyline} from "leaflet";
+import {CRS, Polyline} from "leaflet";
 
 import "@geoman-io/leaflet-geoman-free";
 import "@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css";
@@ -53,37 +54,68 @@ function GeomanPage(props) {
     }
 
     function processLayers(layers) {
-        let result = {
-            "type": "GeometryCollection",
-            "features": []
-        };
 
-        for (let key in layers) {
-            let target = result.features;
-            layers[key].forEach((el, index) => {
-                let shape = el.pm._shape;
+        let map = mapRef.current;
 
-                // get coordinates
-                let coordinates = [];
-                el._parts[0].forEach((el, index) => {
-                    coordinates.push([el.x, el.y]);
+        if (map) {
+
+            let result = {
+                "type": "FeatureCollection",
+                "features": []
+            };
+
+            for (let key in layers) {
+                let target = result.features;
+                layers[key].forEach((el, index) => {
+                    let shape = el.pm._shape;
+
+                    // get coordinates
+                    let coordinates = [];
+                    // console.log(el._parts[0]);
+
+
+
+                    //Bounds {min: Point, max: Point}
+                    // max: Point {x: 837, y: 145}
+                    // min: Point {x: -337, y: -645}
+                    // edit coordinates so it is 0 ... 1000... if console.log "map", it has _size and _pixelOrigin which would break everything otherwise
+                    // let bounds = map.getPixelBounds();
+                    // let xMin = bounds.min.x;
+                    // let xMax = bounds.max.x;
+                    // let yMin = bounds.min.y;
+                    // let yMax = bounds.max.y;
+                    // let xLength = xMax - xMin;
+                    // let yLength = yMax - yMin;
+                    // console.log("xmin: ", xMin, "  ymin: ", yMin, "  xMax: ", xMax, "  yMax: ", yMax)
+
+
+                    el.getLatLngs()[0].forEach((el, index) => {
+                        coordinates.push([el.lng, el.lat]);
+                    });
+
+                    // push clean geoJSON data object
+                    target.push({
+                        // "type": shape,
+                        "type": "Feature",
+                        "id": key.toString() + index.toString(),
+                        "properties": {
+                            "floor": key,
+                            "roomID": el.LUProperties.id,
+                            "roomType": el.LUProperties.type
+                        },
+                        "geometry": {
+                            "type": "Polygon",
+                            "coordinates": [coordinates]
+                        }
+                    })
                 });
+            }
 
-                // push clean geoJSON data object
-                target.push({
-                    "type": shape,
-                    "id": key.toString() + index.toString(),
-                    "properties": {
-                        "floor": key,
-                        "roomID": el.LUProperties.id,
-                        "roomType": el.LUProperties.type
-                    },
-                    "coordinates": coordinates
-                })
-            });
+            return result;
+        } else {
+            alert("there was error processing map...");
+            return "";
         }
-
-        return result;
     }
 
     // filter drawed layers grouped by floor
@@ -94,12 +126,14 @@ function GeomanPage(props) {
         floors.forEach((el, index) => {
             let layers = el.current._layers; // this is a little sketchy to use _layers variable
             for (let key in layers) {
-                if (
-                    layers[key] instanceof Polyline || // only if its polyline or polygon
-                    layers[key] instanceof Polygon
-                ) {
+                console.log(layers[key]);
+                // if (
+                //     layers[key] instanceof Polyline || // only if its polyline or polygon
+                //     layers[key] instanceof Polygon
+                // ) {
+                if ("LUProperties" in layers[key])
                     layersResult[index+1].push(layers[key]);
-                }
+                // }
             }
         });
 
@@ -114,7 +148,7 @@ function GeomanPage(props) {
 
     $(document).ready(function() {
         let map = mapRef.current;
-
+        
         $("#button-clear").on("click", () => {
             $("#bin-data-sent").html("");
             $("#bin-data-received-content").html("");
@@ -135,6 +169,20 @@ function GeomanPage(props) {
         })
 
         if (map) {
+            let currentBaseLayer = floors[0].current;
+
+
+
+            //Bounds {min: Point, max: Point}
+            // max: Point {x: 837, y: 145}
+            // min: Point {x: -337, y: -645}
+            // console.log(map.getPixelBounds());
+            // let bounds = map.getPixelBounds();
+            // let xMin = bounds.min.x;
+            // let xMax = bounds.max.x;
+            // let yMin = bounds.min.y;
+            // let yMax = bounds.max.y;
+
             map.pm.addControls({
                 drawCircleMarker: false,
                 drawCircle: false,
@@ -142,10 +190,18 @@ function GeomanPage(props) {
                 drawPolyline: false
             });
 
-            let currentBaseLayer = floors[0].current;
+
+            // console.log(map.getPixelOrigin())
 
             // on new drawing created
             map.on('pm:create', function (e) {
+
+                // console.log(e.layer._parts[0]);
+                // console.log("HELELO");
+                // console.log(e.layer.getLatLngs());
+                // let points = e.layer.getLatLngs();
+                // let
+
                 onOpen(); // opens modal
 
                 // remove layer if cancelled
@@ -167,30 +223,41 @@ function GeomanPage(props) {
                     $("#cancelButton").off("click");
                 });
 
-            // on floor change
+                // on floor change
             }).on('baselayerchange', function (e) {
                 currentBaseLayer = e.layer;
             })
         }
     });
 
+
+
+    const limeOptions = { color: 'lime' }
+
+    const polygon = [
+        [0, 0],
+        [1000, 0],
+        [1000, 1000],
+        [0, 1000],
+    ]
+
     //
     return (
         <div id="geoman-wrapper">
-                <Button m={1} onClick={printJSON} id="button-geoJSON">Generate JSON</Button>
-                <Button m={1} id="button-receive-data">Receive data</Button>
-                <Button m={1} id="button-clear">Clear data</Button>
+            <Button m={1} onClick={printJSON} id="button-geoJSON">Generate JSON</Button>
+            <Button m={1} id="button-receive-data">Receive data</Button>
+            <Button m={1} id="button-clear">Clear data</Button>
 
-                <Modal
-                    initialFocusRef={idRef}
-                    isOpen={isOpen}
-                    onClose={onClose}
-                >
-                    <ModalOverlay />
-                    <ModalContent>
-                        <ModalHeader>Telpas informācija</ModalHeader>
-                        <ModalCloseButton />
-                        <form id="mainForm">
+            <Modal
+                initialFocusRef={idRef}
+                isOpen={isOpen}
+                onClose={onClose}
+            >
+                <ModalOverlay />
+                <ModalContent>
+                    <ModalHeader>Telpas informācija</ModalHeader>
+                    <ModalCloseButton />
+                    <form id="mainForm">
                         <ModalBody pb={6}>
                             <FormControl>
                                 <FormLabel>ID</FormLabel>
@@ -207,23 +274,26 @@ function GeomanPage(props) {
                             </FormControl>
                         </ModalBody>
 
-                            <ModalFooter>
-                                <Button onClick={onClose} type="submit" colorScheme="blue" mr={3}>
-                                    Saglabāt
-                                </Button>
-                                <Button onClick={onClose} id="cancelButton">Atcelt</Button>
-                            </ModalFooter>
-                        </form>
-                    </ModalContent>
-                </Modal>
+                        <ModalFooter>
+                            <Button onClick={onClose} type="submit" colorScheme="blue" mr={3}>
+                                Saglabāt
+                            </Button>
+                            <Button onClick={onClose} id="cancelButton">Atcelt</Button>
+                        </ModalFooter>
+                    </form>
+                </ModalContent>
+            </Modal>
 
             <div id="bin-data-sent" className="bin-data"/>
-            <div id="bin-data-received-content" className="bin-data"></div>
+            <div id="bin-data-received-content" className="bin-data"/>
             <MapContainer whenCreated={(mapInstance)=> { mapRef.current = mapInstance }} bounds={props.bounds} center={props.center} maxZoom={1} minZoom={-5} doubleClickZoom={false} crs={CRS.Simple}>
                 <LayersControl position="topright" collapsed={false}>
                     {/* layers + layer control */}
                     <LayersControl.BaseLayer  checked name={props.theLayers[1]["name"]}>
                         <LayerGroup ref={floors[0]}>
+
+                            <Polygon pathOptions={limeOptions} positions={polygon} />
+
                             <ImageOverlay bounds={props.bounds} url={props.pathToImg + props.theLayers[1]["imageName"]} />
                         </LayerGroup>
                     </LayersControl.BaseLayer>
@@ -234,17 +304,17 @@ function GeomanPage(props) {
                     </LayersControl.BaseLayer>
                     <LayersControl.BaseLayer name={props.theLayers[3]["name"]}>
                         <LayerGroup ref={floors[2]}>
-                        <ImageOverlay bounds={props.bounds} url={props.pathToImg + props.theLayers[3]["imageName"]} />
+                            <ImageOverlay bounds={props.bounds} url={props.pathToImg + props.theLayers[3]["imageName"]} />
                         </LayerGroup>
                     </LayersControl.BaseLayer>
                     <LayersControl.BaseLayer name={props.theLayers[4]["name"]}>
                         <LayerGroup ref={floors[3]}>
-                        <ImageOverlay bounds={props.bounds} url={props.pathToImg + props.theLayers[4]["imageName"]} />
+                            <ImageOverlay bounds={props.bounds} url={props.pathToImg + props.theLayers[4]["imageName"]} />
                         </LayerGroup>
                     </LayersControl.BaseLayer>
                     <LayersControl.BaseLayer name={props.theLayers[5]["name"]}>
                         <LayerGroup ref={floors[4]}>
-                        <ImageOverlay bounds={props.bounds} url={props.pathToImg + props.theLayers[5]["imageName"]} />
+                            <ImageOverlay bounds={props.bounds} url={props.pathToImg + props.theLayers[5]["imageName"]} />
                         </LayerGroup>
                     </LayersControl.BaseLayer>
                 </LayersControl>
