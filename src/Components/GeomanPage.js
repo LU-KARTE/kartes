@@ -2,7 +2,7 @@ import React, {useState} from 'react'
 import $ from 'jquery'
 import {
     Button,
-    ChakraProvider, FormControl, FormLabel, Input,
+    ChakraProvider, Flex, FormControl, FormLabel, Input,
     Modal, ModalBody,
     ModalCloseButton,
     ModalContent, ModalFooter,
@@ -20,6 +20,7 @@ import {CRS, Polyline} from "leaflet";
 
 import "@geoman-io/leaflet-geoman-free";
 import "@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css";
+import Search from "./Search";
 
 // still to do
 // 1. add modal edit option (open modal, preferably with written previous data)
@@ -230,20 +231,17 @@ function GeomanPage(props) {
         }
     });
 
-
-
-    const limeOptions = { color: 'lime' }
-
-    const polygon = [
-        [0, 0],
-        [1000, 0],
-        [1000, 1000],
-        [0, 1000],
-    ]
-
     //
     return (
         <div id="geoman-wrapper">
+            <Flex p={4}>
+                {/*<Box>*/}
+                {/*<Image h={50} src={pathToImg + "logo.png"}  fallbackSrc="https://via.placeholder.com/150" />*/}
+                {/*</Box>*/}
+                {/*<Spacer />*/}
+
+                <Search />
+            </Flex>
             <Button m={1} onClick={printJSON} id="button-geoJSON">Generate JSON</Button>
             <Button m={1} id="button-receive-data">Receive data</Button>
             <Button m={1} id="button-clear">Clear data</Button>
@@ -291,9 +289,6 @@ function GeomanPage(props) {
                     {/* layers + layer control */}
                     <LayersControl.BaseLayer  checked name={props.theLayers[1]["name"]}>
                         <LayerGroup ref={floors[0]}>
-
-                            <Polygon pathOptions={limeOptions} positions={polygon} />
-
                             <ImageOverlay bounds={props.bounds} url={props.pathToImg + props.theLayers[1]["imageName"]} />
                         </LayerGroup>
                     </LayersControl.BaseLayer>

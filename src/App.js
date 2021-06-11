@@ -78,38 +78,29 @@ class App extends Component {
         return (
             <>
                 <HashRouter>
-                    <Flex p={4}>
-                        {/*<Box>*/}
-                            {/*<Image h={50} src={pathToImg + "logo.png"}  fallbackSrc="https://via.placeholder.com/150" />*/}
-                        {/*</Box>*/}
-                        {/*<Spacer />*/}
-
-                        <Search />
-                    </Flex>
-
                     <Switch>
                         <Route exact path='/geoman' render={(props) => (<GeomanPage {...props} pathToImg={pathToImg} bounds={bounds} center={center} theLayers={layers} />)}/>
                         <Route exact path='/search' render={(props) => (<Search {...props} pathToImg={pathToImg} bounds={bounds} center={center} theLayers={layers} />)}/>
                         {/*<Route exact path='/header' render={(props) => (<Header {...props} pathToImg={pathToImg}/>)}/>*/}
-                        <Route exact path='/:id?' render={(props) => (<Home {...props} pathToImg={pathToImg} bounds={bounds} center={center} theLayers={layers} />)}/>
+                        <Route exact path='/:floor?/:id?' render={(props) => (<Home {...props} pathToImg={pathToImg} bounds={bounds} center={center} theLayers={layers} />)}/>
                         <Route status={404}>
                             <div>Page not found.</div>
                         </Route>
                     </Switch>
 
 
-                    <Link to="/">
-                        <Button size="xs" m={1} colorScheme="blue">Home</Button>
-                    </Link>
-                    <Link to="/geoman">
-                        <Button size="xs" m={1} colorScheme="blue">Geoman</Button>
-                    </Link>
-                    <Link to="/search">
-                        <Button size="xs" m={1} colorScheme="blue">Search</Button>
-                    </Link>
-                    <Link to="/512">
-                        <Button size="xs" m={1} colorScheme="blue">Search for #512</Button>
-                    </Link>
+                    {/*<Link to="/">*/}
+                    {/*    <Button size="xs" m={1} colorScheme="blue">Home</Button>*/}
+                    {/*</Link>*/}
+                    {/*<Link to="/geoman">*/}
+                    {/*    <Button size="xs" m={1} colorScheme="blue">Geoman</Button>*/}
+                    {/*</Link>*/}
+                    {/*<Link to="/search">*/}
+                    {/*    <Button size="xs" m={1} colorScheme="blue">Search</Button>*/}
+                    {/*</Link>*/}
+                    {/*<Link to="/512">*/}
+                    {/*    <Button size="xs" m={1} colorScheme="blue">Search for #512</Button>*/}
+                    {/*</Link>*/}
                 </HashRouter>
             </>
         )

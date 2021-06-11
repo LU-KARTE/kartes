@@ -18,7 +18,7 @@ import {
     useDisclosure,
     ScaleFade, Slide, SlideFade, Collapse, Divider
 } from "@chakra-ui/react";
-import {Search2Icon, StarIcon} from '@chakra-ui/icons'
+import {CloseIcon, Search2Icon, StarIcon} from '@chakra-ui/icons'
 import {Link} from "react-router-dom";
 import SearchInputField from './SearchInput';
 import $ from 'jquery';
@@ -96,6 +96,11 @@ function Search(props) {
     const [searchTerm, setSearchTerm] = React.useState("");
     const [searchResults, setSearchResults] = React.useState([]);
 
+    const changeResultsView = setTo =>  {
+        setDisplayResultsList(setTo);
+        if (props.resultsListDisplayStatusHandler)
+            props.resultsListDisplayStatusHandler(setTo);
+    }
 
     const handleChange = e => {
         setSearchTerm(e.target.value);
@@ -154,7 +159,7 @@ function Search(props) {
         // to hide search results on outside click
         $(document).on("click", function(event) {
             if ($(event.target).closest('#searchWrapper').length === 0)
-                setDisplayResultsList("none");
+                changeResultsView("none");
         });
     }, [])
 
@@ -233,12 +238,12 @@ function Search(props) {
     }, [searchTerm, searchTags, searchItems]);
 
     return (
-        <Box id="searchWrapper" width="full" className="App" onFocus={() => setDisplayResultsList("block")}>
+        <Box id="searchWrapper" width="full" className="App" onFocus={() => changeResultsView("block")}>
                 <SearchInputField searchTerm={searchTerm} handleChange={handleChange}/>
                 <div>
                     {/* search results list */}
                     {/*<Text mt={3} mb={3}><b>Atrastās telpas:</b></Text>*/}
-                    <List spacing={0} shadow={"md"} style={{display: displayResultsList}} maxH={300} overflow={"scroll"}
+                    <List spacing={0} shadow={"md"} style={{display: displayResultsList}} maxH="90%" overflow={"scroll"}
                           css={{
                         '&::-webkit-scrollbar': {
                             width: '4px',
@@ -254,8 +259,15 @@ function Search(props) {
 
                         {/* display filter tags */}
                         <ListItem key="filterTags" p={3} pb={0}>
+                            <Flex>
                             <Button size="sm" onClick={handleToggleFilters}>{showAllFilters ? "Aizvērt" : "Atvērt"} filtrus</Button>
                             <Button ml={2} size="sm" onClick={resetFilters}>Izslēgt filtrus</Button>
+                                <Spacer />
+                                <Center>
+                                <CloseIcon cursor={"pointer"} onClick={() => changeResultsView("none")} w={5} h={5} />
+                                </Center>
+                            </Flex>
+
                             <Collapse startingHeight={0} in={showAllFilters}>
                                 <Flex css={{
                                     flexFlow: "row wrap"
@@ -288,7 +300,7 @@ function Search(props) {
                         {searchResults.length > 1 ?
                             // (Object.keys(searchResults[1]).length === 0 ? 1 : MAXSEARCHLISTROWS) ==> this could be just MAXSEARCHLISTROWS but due #999872 it is so that does not break if only one result found.
                             searchResults.slice(0, (Object.keys(searchResults[1]).length === 0 ? 1 : MAXSEARCHLISTROWS)).map((item, key) => (
-                                <Link onClick={() => setDisplayResultsList("none")} key={key} to={"/"+item["properties"]["roomID"]}>
+                                <Link onClick={() => changeResultsView("none")} key={key} to={"/"+item["properties"]["floor"]+ "/" + item["properties"]["roomID"]}>
                                     <ListItem _hover={{ bg: "#f1f1f1" }} p={3}>
                                         <Flex>
                                             <Text>

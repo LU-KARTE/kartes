@@ -3,9 +3,14 @@ import {ImageOverlay, LayersControl, MapContainer, GeoJSON, LayerGroup, Polygon}
 import {CRS} from 'leaflet';
 import { withRouter } from "react-router";
 import $ from "jquery";
-import {Center, Flex, Spacer, Text} from "@chakra-ui/react";
+import {Box, Center, Flex, Spacer, Text} from "@chakra-ui/react";
 import {ChevronLeftIcon, ChevronRightIcon} from "@chakra-ui/icons";
 import * as ReactDOMServer from "react-dom/server";
+import Search from "./Search";
+
+
+import "@geoman-io/leaflet-geoman-free";
+import "@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css";
 
 
 const MAXFLOOR = 5;
@@ -44,40 +49,10 @@ class Home extends Component {
         super(props);
         this.state = {
             currentBaseLayerFloorNumber: 1,
-            roomID: this.props.match.params.id,
-            features: { "type": "FeatureCollection",
-                "features": [
-                    { "type": "Feature",
-                        "geometry": {
-                            "type": "Polygon",
-                            "coordinates": [
-                                [ [100.0, 0.0], [100, 100], [500, 100],
-                                    [500, 0]  ]
-                            ]
-
-                        },
-                        "properties": {
-                            "prop0": "value0",
-                            "prop1": {"this": "that"}
-                        }
-                    },
-                    { "type": "Feature",
-                        "geometry": {
-                            "type": "Polygon",
-                            "coordinates": [
-                                [ [700.0, 200], [700, 500], [900, 100],
-                                    [500, 200]  ]
-                            ]
-
-                        },
-                        "properties": {
-                            "prop0": "value0",
-                            "prop1": {"this": "that"}
-                        }
-                    }
-                ]
-            }
-        };
+            searchingForRoomID: [],
+            features: {},
+            mapRerenderKey: 0,
+        }
     }
 
     // group results (features from JSON) by floors
@@ -102,8 +77,18 @@ class Home extends Component {
 
     // componentDidMount
     componentDidMount() {
-        const id = this.state.roomID;
-        this.fetchData(id);
+        if (this.props.match.params.floor) {
+            this.setState({
+                currentBaseLayerFloorNumber: parseInt(this.props.match.params.floor),
+            })
+        }
+
+        if (this.props.match.params.id) {
+            this.setState({
+                searchingForRoomID: [parseInt(this.props.match.params.id)]
+            })
+        }
+
 
         fetch("/kartes/data.json")
             .then(res => res.json())
@@ -119,64 +104,42 @@ class Home extends Component {
             )
 
         $(document).ready(() => {
+
             $("#FloorDownIcon").on("click", () => {
                 if (this.state.currentBaseLayerFloorNumber > 1) {
                     this.setState(prevstate => (
                         {"currentBaseLayerFloorNumber": prevstate["currentBaseLayerFloorNumber"] - 1}
-                    ))
+                    ));
+
+                    this.setState(prevState => ({mapRerenderKey: prevState.mapRerenderKey + 1}));
                 }
             })
 
             $("#FloorUpIcon").on("click", () => {
-                if (this.state.currentBaseLayerFloorNumber < MAXFLOOR)
+                if (this.state.currentBaseLayerFloorNumber < MAXFLOOR) {
                     this.setState(prevstate => (
                         {"currentBaseLayerFloorNumber": prevstate["currentBaseLayerFloorNumber"] + 1}
-                    ))
+                    ));
+
+                    this.setState(prevState => ({mapRerenderKey: prevState.mapRerenderKey + 1}));
+                }
             })
         })
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if (this.state.roomID !== this.props.match.params.id) {
-            this.setState({roomID: this.props.match.params.id});
+        if (!this.state.searchingForRoomID.includes(parseInt(this.props.match.params.id)) && this.props.match.params.id && this.props.match.params.floor) {
+            this.setState({searchingForRoomID: [parseInt(this.props.match.params.id)]});
+            this.setState({currentBaseLayerFloorNumber: parseInt(this.props.match.params.floor)});
+            this.setState(prevState => ({mapRerenderKey: prevState.mapRerenderKey + 1}));
         }
-        const id = this.state.roomID;
-        this.fetchData(id);
     }
 
-    fetchData = id => {
-        if (!id) return;
-
-        // alert("[check console] Search for room #" + id);
-
-        fetch("/kartes/data.json")
-            .then(res => res.json())
-            .then(
-                (result) => {
-                    // just some console logs...
-                    let foundFlag = false;
-                    console.log("Fetched data:");
-                    console.log(result);
-                    result["features"].forEach ((feature) => {
-                            if (feature["properties"]["roomID"] === id) {
-                                console.log("The requested room was found:")
-                                console.log(feature);
-                                foundFlag = true;
-                            }
-                        }
-                    )
-                    if (!foundFlag)
-                        console.log("Room was not found.");
-
-
-                },
-                (error) => {
-                    // ... some error parsing
-                }
-            )
-    };
-
     onEachFeature = (feature, layer) => {
+        if (this.state.searchingForRoomID && this.state.searchingForRoomID.includes(parseInt(feature.properties.roomID))) {
+            layer.setStyle({"fillOpacity": 0.9});
+        }
+
         const popupContent = ReactDOMServer.renderToString(
             <Popup feature={feature} />
         );
@@ -185,27 +148,35 @@ class Home extends Component {
 
     render() {
         // for floor changes consts... better would be to include in JSX elements directly but somewhy not working.
-        const floor1Checked = this.state.currentBaseLayerFloorNumber === 1;
-        const floor2Checked = this.state.currentBaseLayerFloorNumber === 2;
-        const floor3Checked = this.state.currentBaseLayerFloorNumber === 3;
-        const floor4Checked = this.state.currentBaseLayerFloorNumber === 4;
-        const floor5Checked = this.state.currentBaseLayerFloorNumber === 5;
-        //
-        //
-        // const limeOptions = { color: 'lime' }
-        //
-        // const polygon = [
-        //     [0, 0],
-        //     [1000, 0],
-        //     [1000, 1000],
-        //     [0, 1000],
-        // ]
+        const floor1Checked = this.state.currentBaseLayerFloorNumber == 1;
+        const floor2Checked = this.state.currentBaseLayerFloorNumber == 2;
+        const floor3Checked = this.state.currentBaseLayerFloorNumber == 3;
+        const floor4Checked = this.state.currentBaseLayerFloorNumber == 4;
+        const floor5Checked = this.state.currentBaseLayerFloorNumber == 5;
+
+        // let someStats = ;
 
         return (
             <>
-                <Flex mr={4}>
-                    {this.state.roomID ?
-                        <Text pl={4}>Tiek meklēts #{this.state.roomID}</Text>
+                <Flex p={4}>
+                    {/*<Box>*/}
+                    {/*<Image h={50} src={pathToImg + "logo.png"}  fallbackSrc="https://via.placeholder.com/150" />*/}
+                    {/*</Box>*/}
+                    {/*<Spacer />*/}
+                    <Search resultsListDisplayStatusHandler={(setTo) => {
+                        if (setTo === "block") {
+                            $(".hideOnResultsListShow").css("display", "none");
+                            $(".hideOnResultsListShowFlex").css("display", "none");
+                        } else if (setTo === "none") {
+                            $(".hideOnResultsListShow").css("display", "block");
+                            $(".hideOnResultsListShowFlex").css("display", "flex");
+                        }
+                    }}/>
+                </Flex>
+
+                <Flex mr={4} className="hideOnResultsListShowFlex">
+                    {this.state.searchingForRoomID.length > 0 ?
+                        <Text pl={4}>Tiek meklēts #{this.state.searchingForRoomID.map(item => ( item + " "))}</Text>
                         : ""
                     }
                     <Spacer />
@@ -216,39 +187,36 @@ class Home extends Component {
                     </Center>
                 </Flex>
 
-
-                <MapContainer key={this.state.mapRerenderKey} bounds={this.props.bounds} center={this.props.center} minZoom={-5} doubleClickZoom={false} crs={CRS.Simple}>
+                <MapContainer className="hideOnResultsListShow" key={this.state.mapRerenderKey} bounds={this.props.bounds} center={this.props.center} minZoom={-5} doubleClickZoom={false} crs={CRS.Simple}>
                     <LayersControl position="topright" collapsed={false}>
                         {/* layers + layer control */}
                         <LayersControl.BaseLayer checked={floor1Checked} ref={this.props.baseLayerRef} name={this.props.theLayers[1]["name"]}>
                             <LayerGroup>
-
-                                {/*<Polygon pathOptions={limeOptions} positions={polygon} />*/}
-                                <GeoJSON style={{fillColor: "yellow", fillOpacity: 0.2}} data={this.state.features[1]} onEachFeature={this.onEachFeature}/>
+                                <GeoJSON key={this.state.mapRerenderKey+1} style={{fillColor: "yellow", fillOpacity: 0.2}} data={this.state.features[1]} onEachFeature={this.onEachFeature}/>
                                 <ImageOverlay bounds={this.props.bounds} url={this.props.pathToImg + this.props.theLayers[1]["imageName"]} />
                             </LayerGroup>
                         </LayersControl.BaseLayer>
                         <LayersControl.BaseLayer checked={floor2Checked} name={this.props.theLayers[2]["name"]}>
                             <LayerGroup>
-                                <GeoJSON style={{fillColor: "yellow", fillOpacity: 0.2}} data={this.state.features[2]} onEachFeature={this.onEachFeature}/>
+                                <GeoJSON key={this.state.mapRerenderKey+2} style={{fillColor: "yellow", fillOpacity: 0.2}} data={this.state.features[2]} onEachFeature={this.onEachFeature}/>
                                 <ImageOverlay bounds={this.props.bounds} url={this.props.pathToImg + this.props.theLayers[2]["imageName"]} />
                             </LayerGroup>
                         </LayersControl.BaseLayer>
                         <LayersControl.BaseLayer checked={floor3Checked} name={this.props.theLayers[3]["name"]}>
                             <LayerGroup>
-                                <GeoJSON style={{fillColor: "yellow", fillOpacity: 0.2}} data={this.state.features[3]} onEachFeature={this.onEachFeature}/>
+                                <GeoJSON key={this.state.mapRerenderKey+3} style={{fillColor: "yellow", fillOpacity: 0.2}} data={this.state.features[3]} onEachFeature={this.onEachFeature}/>
                                 <ImageOverlay bounds={this.props.bounds} url={this.props.pathToImg + this.props.theLayers[3]["imageName"]} />
                             </LayerGroup>
                         </LayersControl.BaseLayer>
                         <LayersControl.BaseLayer checked={floor4Checked} name={this.props.theLayers[4]["name"]}>
                             <LayerGroup>
-                                <GeoJSON style={{fillColor: "yellow", fillOpacity: 0.2}} data={this.state.features[4]} onEachFeature={this.onEachFeature}/>
+                                <GeoJSON key={this.state.mapRerenderKey+4} style={{fillColor: "yellow", fillOpacity: 0.2}} data={this.state.features[4]} onEachFeature={this.onEachFeature}/>
                                 <ImageOverlay bounds={this.props.bounds} url={this.props.pathToImg + this.props.theLayers[4]["imageName"]} />
                             </LayerGroup>
                         </LayersControl.BaseLayer>
                         <LayersControl.BaseLayer checked={floor5Checked} name={this.props.theLayers[5]["name"]}>
                             <LayerGroup>
-                                <GeoJSON style={{fillColor: "yellow", fillOpacity: 0.2}} data={this.state.features[5]} onEachFeature={this.onEachFeature}/>
+                                <GeoJSON key={this.state.mapRerenderKey+5} style={{fillColor: "yellow", fillOpacity: 0.2}} data={this.state.features[5]} onEachFeature={this.onEachFeature}/>
                                 <ImageOverlay bounds={this.props.bounds} url={this.props.pathToImg + this.props.theLayers[5]["imageName"]} />
                             </LayerGroup>
                         </LayersControl.BaseLayer>
