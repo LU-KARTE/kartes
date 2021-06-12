@@ -143,7 +143,7 @@ class Home extends Component {
 
     onEachFeature = (feature, layer) => {
         if (this.state.searchingForRoomID && this.state.searchingForRoomID.includes(parseInt(feature.properties.roomID))) {
-            layer.setStyle({"fillOpacity": 0.5});
+            layer.setStyle({"fillOpacity": 0.5, fillColor: "red"});
         }
 
         const popupContent = ReactDOMServer.renderToString(
@@ -161,6 +161,13 @@ class Home extends Component {
         const floor5Checked = this.state.currentBaseLayerFloorNumber == 5;
 
         // let someStats = ;
+
+        const initGeoJSONStyle = {
+            fillOpacity: 0,
+            fillColor: "transparent",
+            color: "transparent",
+            opacity: 1
+        }
 
         return (
             <>
@@ -182,7 +189,13 @@ class Home extends Component {
 
                 <Flex mr={4} className="hideOnResultsListShowFlex">
                     {this.state.searchingForRoomID.length > 0 ?
-                        <Text pl={4}>Tiek meklēts #{this.state.searchingForRoomID.map(item => ( item + " "))}</Text>
+                        <Text pl={4}>Tiek meklēta
+                            {
+                                this.state.searchingForRoomID.map(
+                                    item => (" " + item + ". telpa " )
+                                )
+                            }
+                        </Text>
                         : ""
                     }
                     <Spacer />
@@ -193,36 +206,36 @@ class Home extends Component {
                     </Center>
                 </Flex>
 
-                <MapContainer className="hideOnResultsListShow" key={this.state.mapRerenderKey} bounds={this.props.bounds} center={this.props.center} minZoom={-5} doubleClickZoom={false} crs={CRS.Simple}>
+                <MapContainer className="hideOnResultsListShow" key={this.state.mapRerenderKey} bounds={this.props.bounds} center={this.props.center} minZoom={-2} doubleClickZoom={false} crs={CRS.Simple}>
                     <LayersControl position="topright" collapsed={false}>
                         {/* layers + layer control */}
                         <LayersControl.BaseLayer checked={floor1Checked} ref={this.props.baseLayerRef} name={this.props.theLayers[1]["name"]}>
                             <LayerGroup>
-                                <GeoJSON key={this.state.mapRerenderKey+1} style={{fillColor: "yellow", fillOpacity: 0.2}} data={this.state.features[1]} onEachFeature={this.onEachFeature}/>
+                                <GeoJSON key={this.state.mapRerenderKey+1} style={initGeoJSONStyle} data={this.state.features[1]} onEachFeature={this.onEachFeature}/>
                                 <ImageOverlay bounds={this.props.bounds} url={this.props.pathToImg + this.props.theLayers[1]["imageName"]} />
                             </LayerGroup>
                         </LayersControl.BaseLayer>
                         <LayersControl.BaseLayer checked={floor2Checked} name={this.props.theLayers[2]["name"]}>
                             <LayerGroup>
-                                <GeoJSON key={this.state.mapRerenderKey+2} style={{fillColor: "yellow", fillOpacity: 0.2}} data={this.state.features[2]} onEachFeature={this.onEachFeature}/>
+                                <GeoJSON key={this.state.mapRerenderKey+2} style={initGeoJSONStyle} data={this.state.features[2]} onEachFeature={this.onEachFeature}/>
                                 <ImageOverlay bounds={this.props.bounds} url={this.props.pathToImg + this.props.theLayers[2]["imageName"]} />
                             </LayerGroup>
                         </LayersControl.BaseLayer>
                         <LayersControl.BaseLayer checked={floor3Checked} name={this.props.theLayers[3]["name"]}>
                             <LayerGroup>
-                                <GeoJSON key={this.state.mapRerenderKey+3} style={{fillColor: "yellow", fillOpacity: 0.2}} data={this.state.features[3]} onEachFeature={this.onEachFeature}/>
+                                <GeoJSON key={this.state.mapRerenderKey+3} style={initGeoJSONStyle} data={this.state.features[3]} onEachFeature={this.onEachFeature}/>
                                 <ImageOverlay bounds={this.props.bounds} url={this.props.pathToImg + this.props.theLayers[3]["imageName"]} />
                             </LayerGroup>
                         </LayersControl.BaseLayer>
                         <LayersControl.BaseLayer checked={floor4Checked} name={this.props.theLayers[4]["name"]}>
                             <LayerGroup>
-                                <GeoJSON key={this.state.mapRerenderKey+4} style={{fillColor: "yellow", fillOpacity: 0.2}} data={this.state.features[4]} onEachFeature={this.onEachFeature}/>
+                                <GeoJSON key={this.state.mapRerenderKey+4} style={initGeoJSONStyle} data={this.state.features[4]} onEachFeature={this.onEachFeature}/>
                                 <ImageOverlay bounds={this.props.bounds} url={this.props.pathToImg + this.props.theLayers[4]["imageName"]} />
                             </LayerGroup>
                         </LayersControl.BaseLayer>
                         <LayersControl.BaseLayer checked={floor5Checked} name={this.props.theLayers[5]["name"]}>
                             <LayerGroup>
-                                <GeoJSON key={this.state.mapRerenderKey+5} style={{fillColor: "yellow", fillOpacity: 0.2}} data={this.state.features[5]} onEachFeature={this.onEachFeature}/>
+                                <GeoJSON key={this.state.mapRerenderKey+5} style={initGeoJSONStyle} data={this.state.features[5]} onEachFeature={this.onEachFeature}/>
                                 <ImageOverlay bounds={this.props.bounds} url={this.props.pathToImg + this.props.theLayers[5]["imageName"]} />
                             </LayerGroup>
                         </LayersControl.BaseLayer>
