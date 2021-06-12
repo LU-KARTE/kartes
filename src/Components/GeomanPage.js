@@ -2,7 +2,7 @@ import React, {useState} from 'react'
 import $ from 'jquery'
 import {
     Button,
-    ChakraProvider, Flex, FormControl, FormLabel, Input,
+    ChakraProvider, Flex, FormControl, FormHelperText, FormLabel, Input,
     Modal, ModalBody,
     ModalCloseButton,
     ModalContent, ModalFooter,
@@ -102,7 +102,8 @@ function GeomanPage(props) {
                         "properties": {
                             "floor": key,
                             "roomID": el.LUProperties.id,
-                            "roomType": el.LUProperties.type
+                            "roomType": el.LUProperties.type,
+                            "extraInfo": el.LUProperties.extraInfo
                         },
                         "geometry": {
                             "type": "Polygon",
@@ -127,7 +128,6 @@ function GeomanPage(props) {
         floors.forEach((el, index) => {
             let layers = el.current._layers; // this is a little sketchy to use _layers variable
             for (let key in layers) {
-                console.log(layers[key]);
                 // if (
                 //     layers[key] instanceof Polyline || // only if its polyline or polygon
                 //     layers[key] instanceof Polygon
@@ -216,9 +216,11 @@ function GeomanPage(props) {
                 $("#mainForm").on("submit", function (event) {
                     let ID = $("#idField").val();
                     let type = $("#typeField").val();
+                    let extraInfo = $("#extraInfoField").val();
                     e.layer.LUProperties = {};
                     e.layer.LUProperties.id = ID;
                     e.layer.LUProperties.type = type;
+                    e.layer.LUProperties.extraInfo = extraInfo;
                     currentBaseLayer.addLayer(e.layer);
                     $("#mainForm").off("submit");
                     $("#cancelButton").off("click");
@@ -253,22 +255,32 @@ function GeomanPage(props) {
             >
                 <ModalOverlay />
                 <ModalContent>
-                    <ModalHeader>Telpas informācija</ModalHeader>
+                    <ModalHeader>Pievienot jaunu telpu</ModalHeader>
                     <ModalCloseButton />
                     <form id="mainForm">
                         <ModalBody pb={6}>
                             <FormControl>
-                                <FormLabel>ID</FormLabel>
-                                <Input id="idField" ref={idRef} placeholder="Piemēram, 312"/>
+                                <FormLabel>ID*</FormLabel>
+                                <Input type="number"  id="idField" ref={idRef} placeholder="Piemēram, 312"/>
                             </FormControl>
 
-                            <FormControl mt={4}>
-                                <FormLabel>Tips</FormLabel>
+
+                            <FormControl my={5}>
+                                <FormLabel>Tips*</FormLabel>
                                 <Select id="typeField" placeholder="Izvēlies tipu">
                                     <option value="kabinets">Kabinets</option>
                                     <option value="laboratorija">Laboratorija</option>
-                                    <option value="cits">Cits</option>
+                                    <option value="auditorija">Auditorija</option>
+                                    <option value="tualete">Tualetes</option>
+                                    <option value="telpa">Cita telpa</option>
                                 </Select>
+                            </FormControl>
+
+
+                            <FormControl>
+                                <FormLabel>Telpas nosaukums</FormLabel>
+                                <Input id="extraInfoField" placeholder="Piemēram, Studentu pašpārvaldes telpa"/>
+                                <FormHelperText>Šo jāieraksta tikai tad, ja telpai ir īpašs nosaukums. Tas aizstāj ID un tipu. </FormHelperText>
                             </FormControl>
                         </ModalBody>
 

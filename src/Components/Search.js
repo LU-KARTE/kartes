@@ -49,8 +49,16 @@ function Search(props) {
                 "frontendName": "Laboratorijas",
             },
             {
-                "filterTerm": "cits",
-                "frontendName": "Citi",
+                "filterTerm": "auditorija",
+                "frontendName": "Auditorija",
+            },
+            {
+                "filterTerm": "tualete",
+                "frontendName": "Tualete",
+            },
+            {
+                "filterTerm": "telpa",
+                "frontendName": "Telpa",
             },
         ],
         "floors" : [
@@ -74,6 +82,22 @@ function Search(props) {
                 "filterTerm": "5",
                 "frontendName": "5. stāvs",
             },
+            {
+                "filterTerm": "6",
+                "frontendName": "6. stāvs",
+            },
+            {
+                "filterTerm": "7",
+                "frontendName": "7. stāvs",
+            },
+            {
+                "filterTerm": "8",
+                "frontendName": "8. stāvs",
+            },
+            {
+                "filterTerm": "9",
+                "frontendName": "9. stāvs",
+            },
         ]
     }
 
@@ -81,7 +105,9 @@ function Search(props) {
         "roomTypes" : [
             "kabinets",
             "laboratorija",
-            "cits",
+            "auditorija",
+            "tualete",
+            "telpa",
         ],
         "floors" : [
             "1",
@@ -89,6 +115,10 @@ function Search(props) {
             "3",
             "4",
             "5",
+            "6",
+            "7",
+            "8",
+            "9",
         ]
     }
     const [searchTags, setSearchTags] = useState(initval )
@@ -173,6 +203,10 @@ function Search(props) {
         let roomID = feature["properties"]["roomID"].toLowerCase();
         let roomType = feature["properties"]["roomType"].toLowerCase();
         let roomFloor = feature["properties"]["floor"].toLowerCase();
+        let extraInfo = [];
+
+        if (feature["properties"]["extraInfo"])
+            extraInfo = feature["properties"]["extraInfo"].toLowerCase().split(" ");
 
         let searchWords = stLowered.split(" "); // array of words (search terms)
 
@@ -198,14 +232,23 @@ function Search(props) {
         for (let i = 0; i < searchWordsLength; i++) {
             if (searchWords[i] === "")
                 continue;
+
             if (roomID === searchWords[i])
                 points += equalPoints;
             else if (roomID.includes(searchWords[i]))
                 points += includesPoints;
+
             if (roomType === searchWords[i])
                 points += equalPoints;
             else if (roomType.includes(searchWords[i]))
                 points += includesPoints;
+
+            extraInfo.forEach(infoToken => {
+               if (infoToken === searchWords[i])
+                   points += equalPoints;
+               else if (infoToken.includes(searchWords[i]))
+                   points += includesPoints;
+            });
         }
 
         return points;
@@ -304,7 +347,11 @@ function Search(props) {
                                     <ListItem _hover={{ bg: "#f1f1f1" }} p={3}>
                                         <Flex>
                                             <Text>
-                                                {item["properties"]["roomID"] + ". " + item["properties"]["roomType"].substr(0,1).toUpperCase() + item["properties"]["roomType"].substr(1)} {/* capitalize */}
+                                                {item["properties"]["extraInfo"] ?
+                                                    item["properties"]["extraInfo"]
+                                                    :
+                                                    item["properties"]["roomID"] + ". " + item["properties"]["roomType"].substr(0,1).toUpperCase() + item["properties"]["roomType"].substr(1)
+                                                }
                                             </Text>
                                             <Spacer />
                                             <Text> {item["properties"]["floor"]}. stāvs</Text>

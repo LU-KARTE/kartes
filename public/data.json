@@ -71,7 +71,7 @@
       "properties": {
         "floor": "1",
         "roomID": "999",
-        "roomType": "cits"
+        "roomType": "telpa"
       },
       "geometry": {
         "type": "Polygon",
@@ -163,7 +163,7 @@
       "properties": {
         "floor": "2",
         "roomID": "219",
-        "roomType": "cits"
+        "roomType": "telpa"
       },
       "geometry": {
         "type": "Polygon",
@@ -194,7 +194,7 @@
       "id": "50",
       "properties": {
         "floor": "5",
-        "roomID": "512",
+        "roomID": "503",
         "roomType": "kabinets"
       },
       "geometry": {
@@ -226,7 +226,7 @@
       "id": "51",
       "properties": {
         "floor": "5",
-        "roomID": "514",
+        "roomID": "507",
         "roomType": "laboratorija"
       },
       "geometry": {
@@ -258,8 +258,9 @@
       "id": "52",
       "properties": {
         "floor": "5",
-        "roomID": "597",
-        "roomType": "cits"
+        "roomID": "516",
+        "roomType": "telpa",
+        "extraInfo": "Studentu pašpārvaldes telpa"
       },
       "geometry": {
         "type": "Polygon",
@@ -290,7 +291,7 @@
       "id": "53",
       "properties": {
         "floor": "5",
-        "roomID": "503",
+        "roomID": "509",
         "roomType": "kabinets"
       },
       "geometry": {

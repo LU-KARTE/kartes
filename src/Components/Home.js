@@ -3,7 +3,7 @@ import {ImageOverlay, LayersControl, MapContainer, GeoJSON, LayerGroup, Polygon}
 import {CRS} from 'leaflet';
 import { withRouter } from "react-router";
 import $ from "jquery";
-import {Box, Center, Flex, Spacer, Text} from "@chakra-ui/react";
+import {Box, Center, Flex, Heading, Spacer, Text} from "@chakra-ui/react";
 import {ChevronLeftIcon, ChevronRightIcon} from "@chakra-ui/icons";
 import * as ReactDOMServer from "react-dom/server";
 import Search from "./Search";
@@ -20,6 +20,7 @@ const Popup = ({ feature }) => {
     let roomID = "";
     let roomType = "";
     let roomDescription = "";
+    let extraInfo = "";
     if (feature.properties) {
         if (feature.properties.roomID) {
             roomID = feature.properties.roomID;
@@ -32,14 +33,19 @@ const Popup = ({ feature }) => {
         if (feature.properties.roomDescription) {
             roomDescription = feature.properties.roomDescription;
         }
+
+        if (feature.properties.extraInfo) {
+            extraInfo = feature.properties.extraInfo;
+        }
     }
 
     return (
-        <div>
-            <Text size="md">{`  ${
-                roomID + ". " + roomType + " " + roomDescription
-            }`}</Text>
-        </div>
+        <Text fontSize="20px"> {`  ${
+            (extraInfo ? 
+                extraInfo : 
+                roomID + ". " + roomType)
+            + " " + roomDescription
+        }`}</Text>
     );
 };
 
@@ -137,7 +143,7 @@ class Home extends Component {
 
     onEachFeature = (feature, layer) => {
         if (this.state.searchingForRoomID && this.state.searchingForRoomID.includes(parseInt(feature.properties.roomID))) {
-            layer.setStyle({"fillOpacity": 0.9});
+            layer.setStyle({"fillOpacity": 0.5});
         }
 
         const popupContent = ReactDOMServer.renderToString(
