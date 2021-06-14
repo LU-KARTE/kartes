@@ -210,7 +210,7 @@ class Home extends Component {
                 </Flex>
 
                 <MapContainer zoomSnap={0.1} zoomDelta={0.6} wheelPxPerZoomLevel={70} className="hideOnResultsListShow" key={this.state.mapRerenderKey} bounds={this.props.bounds} center={this.props.center} minZoom={-2} crs={CRS.Simple}>
-                    <LayersControl position="topright" collapsed={false}>
+                    <LayersControl position="topright" collapsed={true}>
                         {/* layers + layer control */}
                         <LayersControl.BaseLayer checked={floor1Checked} ref={this.props.baseLayerRef} name={this.props.theLayers[1]["name"]}>
                             <LayerGroup>
