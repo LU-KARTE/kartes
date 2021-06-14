@@ -159,6 +159,9 @@ class Home extends Component {
         const floor3Checked = this.state.currentBaseLayerFloorNumber == 3;
         const floor4Checked = this.state.currentBaseLayerFloorNumber == 4;
         const floor5Checked = this.state.currentBaseLayerFloorNumber == 5;
+        const floor6Checked = this.state.currentBaseLayerFloorNumber == 6;
+        const floor7Checked = this.state.currentBaseLayerFloorNumber == 7;
+        const floor8Checked = this.state.currentBaseLayerFloorNumber == 8;
 
         // let someStats = ;
 
@@ -206,7 +209,7 @@ class Home extends Component {
                     </Center>
                 </Flex>
 
-                <MapContainer className="hideOnResultsListShow" key={this.state.mapRerenderKey} bounds={this.props.bounds} center={this.props.center} minZoom={-2} doubleClickZoom={false} crs={CRS.Simple}>
+                <MapContainer zoomSnap={0.1} zoomDelta={0.6} wheelPxPerZoomLevel={70} className="hideOnResultsListShow" key={this.state.mapRerenderKey} bounds={this.props.bounds} center={this.props.center} minZoom={-2} crs={CRS.Simple}>
                     <LayersControl position="topright" collapsed={false}>
                         {/* layers + layer control */}
                         <LayersControl.BaseLayer checked={floor1Checked} ref={this.props.baseLayerRef} name={this.props.theLayers[1]["name"]}>
@@ -237,6 +240,24 @@ class Home extends Component {
                             <LayerGroup>
                                 <GeoJSON key={this.state.mapRerenderKey+5} style={initGeoJSONStyle} data={this.state.features[5]} onEachFeature={this.onEachFeature}/>
                                 <ImageOverlay bounds={this.props.bounds} url={this.props.pathToImg + this.props.theLayers[5]["imageName"]} />
+                            </LayerGroup>
+                        </LayersControl.BaseLayer>
+                        <LayersControl.BaseLayer checked={floor6Checked} name={this.props.theLayers[6]["name"]}>
+                            <LayerGroup>
+                                <GeoJSON key={this.state.mapRerenderKey+6} style={initGeoJSONStyle} data={this.state.features[6]} onEachFeature={this.onEachFeature}/>
+                                <ImageOverlay bounds={this.props.bounds} url={this.props.pathToImg + this.props.theLayers[6]["imageName"]} />
+                            </LayerGroup>
+                        </LayersControl.BaseLayer>
+                        <LayersControl.BaseLayer checked={floor7Checked} name={this.props.theLayers[7]["name"]}>
+                            <LayerGroup>
+                                <GeoJSON key={this.state.mapRerenderKey+7} style={initGeoJSONStyle} data={this.state.features[7]} onEachFeature={this.onEachFeature}/>
+                                <ImageOverlay bounds={this.props.bounds} url={this.props.pathToImg + this.props.theLayers[7]["imageName"]} />
+                            </LayerGroup>
+                        </LayersControl.BaseLayer>
+                        <LayersControl.BaseLayer checked={floor8Checked} name={this.props.theLayers[8]["name"]}>
+                            <LayerGroup>
+                                <GeoJSON key={this.state.mapRerenderKey+8} style={initGeoJSONStyle} data={this.state.features[8]} onEachFeature={this.onEachFeature}/>
+                                <ImageOverlay bounds={this.props.bounds} url={this.props.pathToImg + this.props.theLayers[8]["imageName"]} />
                             </LayerGroup>
                         </LayersControl.BaseLayer>
                     </LayersControl>

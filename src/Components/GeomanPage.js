@@ -2,7 +2,7 @@ import React, {useState} from 'react'
 import $ from 'jquery'
 import {
     Button,
-    ChakraProvider, Flex, FormControl, FormHelperText, FormLabel, Input,
+    Flex, FormControl, FormHelperText, FormLabel, Input,
     Modal, ModalBody,
     ModalCloseButton,
     ModalContent, ModalFooter,
@@ -13,27 +13,19 @@ import {
     MapContainer,
     LayerGroup,
     LayersControl,
-    ImageOverlay,
-    Polygon
+    ImageOverlay
 } from "react-leaflet";
-import {CRS, Polyline} from "leaflet";
+import {CRS} from "leaflet";
 
 import "@geoman-io/leaflet-geoman-free";
 import "@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css";
 import Search from "./Search";
-
-// still to do
-// 1. add modal edit option (open modal, preferably with written previous data)
-// 2. add some validation, for ID only numbers, both fields required etc
-// 3. is there a bug that first layer is removed even when submitting? First time had, then no.
-// 4. db schema - should data be grouped by floor number or floor number should be in properties field for each?
-// 5. remove unneeded stuff
-// 6. json bin ? or no.
+let fileDownload = require('js-file-download');
 
 function GeomanPage(props) {
 
     const mapRef = React.useRef();
-    const floors = [React.useRef(), React.useRef(), React.useRef(), React.useRef(), React.useRef()];
+    const floors = [React.useRef(), React.useRef(), React.useRef(), React.useRef(), React.useRef(), React.useRef(), React.useRef(), React.useRef()];
 
     const { isOpen, onOpen, onClose } = useDisclosure({
         onClose() { $("#cancelButton").click(); }
@@ -52,6 +44,7 @@ function GeomanPage(props) {
         }
 
         $("#bin-data-sent").html("<pre>" + JSON.stringify(processedLayers, undefined, 2) + "</pre>");
+        // fileDownload( JSON.stringify(processedLayers, undefined, 2), 'data.json');
     }
 
     function processLayers(layers) {
@@ -72,23 +65,6 @@ function GeomanPage(props) {
 
                     // get coordinates
                     let coordinates = [];
-                    // console.log(el._parts[0]);
-
-
-
-                    //Bounds {min: Point, max: Point}
-                    // max: Point {x: 837, y: 145}
-                    // min: Point {x: -337, y: -645}
-                    // edit coordinates so it is 0 ... 1000... if console.log "map", it has _size and _pixelOrigin which would break everything otherwise
-                    // let bounds = map.getPixelBounds();
-                    // let xMin = bounds.min.x;
-                    // let xMax = bounds.max.x;
-                    // let yMin = bounds.min.y;
-                    // let yMax = bounds.max.y;
-                    // let xLength = xMax - xMin;
-                    // let yLength = yMax - yMin;
-                    // console.log("xmin: ", xMin, "  ymin: ", yMin, "  xMax: ", xMax, "  yMax: ", yMax)
-
 
                     el.getLatLngs()[0].forEach((el, index) => {
                         coordinates.push([el.lng, el.lat]);
@@ -122,7 +98,7 @@ function GeomanPage(props) {
 
     // filter drawed layers grouped by floor
     function findLayers() {
-        let layersResult = {"1": [], "2": [], "3": [], "4": [], "5": []}; // init empty
+        let layersResult = {"1": [], "2": [], "3": [], "4": [], "5": [], "6": [], "7": [], "8": []}; // init empty
 
         // go over each floor and add each floor's drawings
         floors.forEach((el, index) => {
@@ -172,18 +148,6 @@ function GeomanPage(props) {
         if (map) {
             let currentBaseLayer = floors[0].current;
 
-
-
-            //Bounds {min: Point, max: Point}
-            // max: Point {x: 837, y: 145}
-            // min: Point {x: -337, y: -645}
-            // console.log(map.getPixelBounds());
-            // let bounds = map.getPixelBounds();
-            // let xMin = bounds.min.x;
-            // let xMax = bounds.max.x;
-            // let yMin = bounds.min.y;
-            // let yMax = bounds.max.y;
-
             map.pm.addControls({
                 drawCircleMarker: false,
                 drawCircle: false,
@@ -191,18 +155,8 @@ function GeomanPage(props) {
                 drawPolyline: false
             });
 
-
-            // console.log(map.getPixelOrigin())
-
             // on new drawing created
             map.on('pm:create', function (e) {
-
-                // console.log(e.layer._parts[0]);
-                // console.log("HELELO");
-                // console.log(e.layer.getLatLngs());
-                // let points = e.layer.getLatLngs();
-                // let
-
                 onOpen(); // opens modal
 
                 // remove layer if cancelled
@@ -322,6 +276,21 @@ function GeomanPage(props) {
                     <LayersControl.BaseLayer name={props.theLayers[5]["name"]}>
                         <LayerGroup ref={floors[4]}>
                             <ImageOverlay bounds={props.bounds} url={props.pathToImg + props.theLayers[5]["imageName"]} />
+                        </LayerGroup>
+                    </LayersControl.BaseLayer>
+                    <LayersControl.BaseLayer name={props.theLayers[6]["name"]}>
+                        <LayerGroup ref={floors[5]}>
+                            <ImageOverlay bounds={props.bounds} url={props.pathToImg + props.theLayers[6]["imageName"]} />
+                        </LayerGroup>
+                    </LayersControl.BaseLayer>
+                    <LayersControl.BaseLayer name={props.theLayers[7]["name"]}>
+                        <LayerGroup ref={floors[6]}>
+                            <ImageOverlay bounds={props.bounds} url={props.pathToImg + props.theLayers[7]["imageName"]} />
+                        </LayerGroup>
+                    </LayersControl.BaseLayer>
+                    <LayersControl.BaseLayer name={props.theLayers[8]["name"]}>
+                        <LayerGroup ref={floors[7]}>
+                            <ImageOverlay bounds={props.bounds} url={props.pathToImg + props.theLayers[8]["imageName"]} />
                         </LayerGroup>
                     </LayersControl.BaseLayer>
                 </LayersControl>

@@ -1,26 +1,9 @@
-import { HashRouter, Switch, Route, Link } from 'react-router-dom'
+import { HashRouter, Switch, Route } from 'react-router-dom'
 import React, {Component} from "react";
 import Home from './Components/Home';
 import Search from './Components/Search';
 import GeomanPage from './Components/GeomanPage';
-import SearchInputField from './Components/SearchInput';
-import {
-    Button,
-    Flex,
-    Box,
-    Spacer,
-    Image,
-    Center,
-    Text,
-    HStack,
-    VStack,
-    List,
-    ListIcon,
-    ListItem, Divider
-} from "@chakra-ui/react"
 import 'leaflet/dist/leaflet.css';
-import {ChevronLeftIcon, ChevronRightIcon, HamburgerIcon} from "@chakra-ui/icons";
-import $ from "jquery";
 
 class App extends Component {
     constructor(props) {
@@ -71,6 +54,18 @@ class App extends Component {
             5: {
                 name: "5. stāvs",
                 imageName: "zm5.svg"
+            },
+            6: {
+                name: "6. stāvs",
+                imageName: "zm6.svg"
+            },
+            7: {
+                name: "7. stāvs",
+                imageName: "zm7.svg"
+            },
+            8: {
+                name: "8. stāvs",
+                imageName: "zm8.svg"
             },
 
         }
