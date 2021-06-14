@@ -168,6 +168,7 @@ function GeomanPage(props) {
 
                 // add layer if form submitted
                 $("#mainForm").on("submit", function (event) {
+                    event.preventDefault();
                     let ID = $("#idField").val();
                     let type = $("#typeField").val();
                     let extraInfo = $("#extraInfoField").val();
@@ -178,6 +179,7 @@ function GeomanPage(props) {
                     currentBaseLayer.addLayer(e.layer);
                     $("#mainForm").off("submit");
                     $("#cancelButton").off("click");
+                    onClose();
                 });
 
                 // on floor change
@@ -239,7 +241,7 @@ function GeomanPage(props) {
                         </ModalBody>
 
                         <ModalFooter>
-                            <Button onClick={onClose} type="submit" colorScheme="blue" mr={3}>
+                            <Button type="submit" colorScheme="blue" mr={3}>
                                 Saglabāt
                             </Button>
                             <Button onClick={onClose} id="cancelButton">Atcelt</Button>
