@@ -43,8 +43,8 @@ function GeomanPage(props) {
             processedLayers = processLayers(rawLayers);
         }
 
-        $("#bin-data-sent").html("<pre>" + JSON.stringify(processedLayers, undefined, 2) + "</pre>");
-        // fileDownload( JSON.stringify(processedLayers, undefined, 2), 'data.json');
+        // $("#bin-data-sent").html("<pre>" + JSON.stringify(processedLayers, undefined, 2) + "</pre>");
+        fileDownload( JSON.stringify(processedLayers, undefined, 2), 'data.json');
     }
 
     function processLayers(layers) {

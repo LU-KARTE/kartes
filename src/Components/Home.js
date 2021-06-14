@@ -13,7 +13,8 @@ import "@geoman-io/leaflet-geoman-free";
 import "@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css";
 
 
-const MAXFLOOR = 5;
+const MAXFLOOR = 8;
+const MINFLOOR = 1;
 
 
 const Popup = ({ feature }) => {
@@ -112,7 +113,7 @@ class Home extends Component {
         $(document).ready(() => {
 
             $("#FloorDownIcon").on("click", () => {
-                if (this.state.currentBaseLayerFloorNumber > 1) {
+                if (this.state.currentBaseLayerFloorNumber > MINFLOOR) {
                     this.setState(prevstate => (
                         {"currentBaseLayerFloorNumber": prevstate["currentBaseLayerFloorNumber"] - 1}
                     ));

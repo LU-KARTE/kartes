@@ -25,7 +25,7 @@ import $ from 'jquery';
 
 
 // inspired by https://codesandbox.io/s/practical-nightingale-m2b5n?file=/src/index.js
-const MAXSEARCHLISTROWS = 1000;
+const MAXSEARCHLISTROWS = 100;
 
 function Search(props) {
     const [error, setError] = useState(null);
@@ -93,11 +93,7 @@ function Search(props) {
             {
                 "filterTerm": "8",
                 "frontendName": "8. stāvs",
-            },
-            {
-                "filterTerm": "9",
-                "frontendName": "9. stāvs",
-            },
+            }
         ]
     }
 
@@ -117,8 +113,7 @@ function Search(props) {
             "5",
             "6",
             "7",
-            "8",
-            "9",
+            "8"
         ]
     }
     const [searchTags, setSearchTags] = useState(initval )
