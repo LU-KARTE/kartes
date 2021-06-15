@@ -3,7 +3,7 @@ import {ImageOverlay, LayersControl, MapContainer, GeoJSON, LayerGroup, Polygon}
 import {CRS} from 'leaflet';
 import { withRouter } from "react-router";
 import $ from "jquery";
-import {Box, Center, Flex, Heading, Spacer, Text} from "@chakra-ui/react";
+import {Box, Center, Flex, Heading, Image, Spacer, Text, VStack} from "@chakra-ui/react";
 import {ChevronLeftIcon, ChevronRightIcon} from "@chakra-ui/icons";
 import * as ReactDOMServer from "react-dom/server";
 import Search from "./Search";
@@ -175,12 +175,12 @@ class Home extends Component {
 
         return (
             <>
-                <Flex p={4}>
-                    {/*<Box>*/}
-                    {/*<Image h={50} src={pathToImg + "logo.png"}  fallbackSrc="https://via.placeholder.com/150" />*/}
-                    {/*</Box>*/}
-                    {/*<Spacer />*/}
-                    <Search resultsListDisplayStatusHandler={(setTo) => {
+                <VStack>
+                    <Box mt={3} mb={1}>
+                        {/*proportions 2.976 w:h*/}
+                        <Image h={50} w={149} src={this.props.pathToImg + "lu-logo.png"}  fallbackSrc="https://via.placeholder.com/150" />
+                    </Box>
+                    <Search px={3} resultsListDisplayStatusHandler={(setTo) => {
                         if (setTo === "block") {
                             $(".hideOnResultsListShow").css("display", "none");
                             $(".hideOnResultsListShowFlex").css("display", "none");
@@ -189,9 +189,10 @@ class Home extends Component {
                             $(".hideOnResultsListShowFlex").css("display", "flex");
                         }
                     }}/>
-                </Flex>
+                </VStack>
 
-                <Flex mr={4} className="hideOnResultsListShowFlex">
+                <Flex my={3} mr={4} className="hideOnResultsListShowFlex">
+                    <Center>
                     {this.state.searchingForRoomID.length > 0 ?
                         <Text pl={4}>Tiek meklēta
                             {
@@ -202,6 +203,7 @@ class Home extends Component {
                         </Text>
                         : ""
                     }
+                    </Center>
                     <Spacer />
                     <Center>
                         <ChevronLeftIcon id="FloorDownIcon" style={{"cursor": "pointer"}} w={8} h={8}/>

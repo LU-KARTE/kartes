@@ -276,7 +276,7 @@ function Search(props) {
     }, [searchTerm, searchTags, searchItems]);
 
     return (
-        <Box id="searchWrapper" width="full" className="App" onFocus={() => changeResultsView("block")}>
+        <Box mx={props.mx} my={props.my} px={props.px} py={props.py} id="searchWrapper" width="full" className="App" onFocus={() => changeResultsView("block")}>
                 <SearchInputField searchTerm={searchTerm} handleChange={handleChange}/>
                 <div>
                     {/* search results list */}
